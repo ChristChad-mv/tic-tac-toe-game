@@ -1,7 +1,10 @@
 from abc import ABC
 import game_logic 
-class player (ABC) : 
-    # constructeur 
+class player (ABC) :
+    # attriubt statique : 
+    # cette listes va contenir toutes les cases jouées par les joueurs ( IA et humain)
+    lPLAll_moves=[]  
+    # constructeur  
     def __init__(self,sPLAName,sPLAColor, grid) :
         self.sPLAName=sPLAName
         self.sPLAColor=sPLAColor
@@ -26,22 +29,24 @@ class player (ABC) :
         self.sPLAColor=sPLAColor
 
 
-    # plasser un jeton couleur
+    # placer un jeton couleur
     # @abstractmethod  
-    def PLAPlay(grid, lign , column, lPLAPlayed): 
+    def PLAPlay(grid, lign , column): 
         # methode abstraite qui sera implementer par les autres classes
         pass
 
     # cette methode permet de mettre la case jouée par le joueur dans la liste des coups joués
     def PLArecord_move (self, row, col):
-        if (row, col) in self.lPLAPlayed :
+        if (row, col) in self.lPLAll_moves :
             print ("la case est deja cliquée\n")
         else : 
             self.lPLAPlayed.append((row,col))
+            self.lPLAll_moves.append((row,col))
     
     # cette methode permet de remettre la liste à zero 
-    def Plareset_hsitory(self):
+    def PLAreset_hsitory(self):
         self.lPLAPlayed= []
+        self.lPLAll_moves=[]
 
     # tostring methode 
     def PLAget_info (self):
