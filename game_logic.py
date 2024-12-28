@@ -13,6 +13,7 @@ Classes:
 from enum import Enum
 from typing import List, Tuple
 
+from Player.player import TPlayer
 from Player.PlayerHumain import TPlayerHumain
 from Player.PlayerIA import TPlayerIA
 
@@ -129,3 +130,62 @@ class GameLogic:
             self.grid = self.initialize_grid()
         else:
             print("La taille de la grille doit être comprise entre 3 et 7.")
+
+    def GLIcheck_line(self, iRow: int, iCol: int) -> TPlayer | None:
+        """
+        Vérifie si une ligne est gagnante en partant de la position (iRow, iCol).
+        Elle retourne le joueur qui a gagné si une ligne gagnante est trouvée, sinon elle retourne None.
+        La fonction GLIget_player_by_color est utilisée pour obtenir le joueur correspondant à la couleur trouvée.
+        
+        @param iRow: Index de la ligne
+        @param iCol: Index de la colonne
+        @return: Le joueur qui a gagné, ou None si aucun joueur n'a gagné
+        @rtype: TPlayer | None
+        """
+        if iCol + self.winning_condition > self.size:
+            return None
+
+        oColor = self.grid[iRow][iCol]
+        if oColor == TColor.VIDE:
+            return None
+
+        for i in range(self.winning_condition):
+            if self.grid[iRow][iCol + i] != oColor:
+                return None
+            
+        return self.GLIget_player_by_color(oColor)
+
+    def GLIcheck_column(self, iRow: int, iCol: int) -> TPlayer | None:
+        """
+        Vérifie si une colonne est gagnante en partant de la position (iRow, iCol).
+        Elle retourne le joueur qui a gagné si une colonne gagnante est trouvée, sinon elle retourne None.
+        La fonction GLIget_player_by_color est utilisée pour obtenir le joueur correspondant à la couleur trouvée.
+        
+        @param iRow: Index de la ligne
+        @param iCol: Index de la colonne
+        @return: Le joueur qui a gagné, ou None si aucun joueur n'a gagné
+        @rtype: TPlayer | None
+        """
+        if iRow + self.winning_condition > self.size:
+            return None
+
+        oColor = self.grid[iRow][iCol]
+        if oColor == TColor.VIDE:
+            return None
+
+        for i in range(self.winning_condition):
+            if self.grid[iRow + i][iCol] != oColor:
+                return None
+        return self.GLIget_player_by_color(oColor)
+  
+    def GLIget_player_by_color(self, oColor: TColor) -> TPlayer | None:
+        """
+        Retourne le joueur correspondant à la couleur spécifiée.
+        On prends une couleur en paramètre et on retourne le joueur qui a cette couleur.
+        Si c'est pas le joueur 1, c'est le joueur 2 surement.
+        @param oColor: Couleur du joueur 
+
+        """
+        if self.oGLIPlayer1.PLRget_color() == oColor:
+            return self.oGLIPlayer1
+        return self.oGLIPlayer2
