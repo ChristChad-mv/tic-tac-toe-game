@@ -177,6 +177,55 @@ class GameLogic:
             if self.grid[iRow + i][iCol] != oColor:
                 return None
         return self.GLIget_player_by_color(oColor)
+
+    def GLIcheck_diagonal(self, iRow: int, iCol: int) -> TPlayer | None:
+        """
+        Vérifie si une diagonale est gagnante en partant de la position (iRow, iCol).
+        
+        @param iRow: Index de la ligne de départ pour la vérification de la diagonale.
+        @param iCol: Index de la colonne de départ pour la vérification de la diagonale.
+        @return: Le joueur qui a gagné si une diagonale gagnante est trouvée, sinon None.
+        @rtype: TPlayer | None
+        """
+        # Vérifie la diagonale descendante (de gauche à droite)
+        if iRow + self.winning_condition <= self.size and iCol + self.winning_condition <= self.size:
+            oColor = self.grid[iRow][iCol]
+            if oColor != TColor.VIDE:
+                for i in range(self.winning_condition):
+                    if self.grid[iRow + i][iCol + i] != oColor:
+                        return None
+                return self.GLIget_player_by_color(oColor)
+        
+        # Vérifie la diagonale montante (de droite à gauche)
+        if iRow + self.winning_condition <= self.size and iCol - self.winning_condition + 1 >= 0:
+            oColor = self.grid[iRow][iCol]
+            if oColor != TColor.VIDE:
+                for i in range(self.winning_condition):
+                    if self.grid[iRow + i][iCol - i] != oColor:
+                        return None
+                return self.GLIget_player_by_color(oColor)
+          
+        return None
+    
+    def GLIcheck_winner(self) -> TPlayer | None:
+        """
+        Vérifie si un joueur a gagné.
+        """
+        for iRow in range(self.size):
+            for iCol in range(self.size):
+                oWinner = self.GLIcheck_line(iRow, iCol)
+                if oWinner:
+                    return oWinner
+                
+                oWinner = self.GLIcheck_column(iRow, iCol)
+                if oWinner:
+                    return oWinner
+                
+                oWinner = self.GLIcheck_diagonal(iRow, iCol)
+                if oWinner:
+                    return oWinner
+                
+        return None
   
     def GLIget_player_by_color(self, oColor: TColor) -> TPlayer | None:
         """
