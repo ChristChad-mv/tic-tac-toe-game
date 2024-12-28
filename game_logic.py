@@ -118,3 +118,14 @@ class GameLogic:
             self.bGLIIsPlayerOneTurn = False
         else:
             self.bGLIIsPlayerOneTurn = True
+
+    def GLIresize_grid(self, iNewSize: int):
+        """
+        Redimensionne la grille à la nouvelle taille spécifiée.
+        @param iNewSize: Nouvelle taille de la grille
+        """
+        if iNewSize >= 3 or iNewSize <= 7:
+            self.size = iNewSize
+            self.grid = self.initialize_grid()
+        else:
+            print("La taille de la grille doit être comprise entre 3 et 7.")
