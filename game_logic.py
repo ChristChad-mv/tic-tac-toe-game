@@ -17,6 +17,8 @@ from Player.player import TPlayer
 from Player.PlayerHumain import TPlayerHumain
 from Player.PlayerIA import TPlayerIA
 
+TPlayer.PLRget_color
+
 class TColor(Enum):
     """
     Énumération des couleurs disponibles pour les joueurs.
@@ -94,6 +96,13 @@ class GameLogic:
         if 0 <= iRow < self.size and 0 <= iCol < self.size and self.grid[iRow][iCol] == TColor.VIDE:
             self.grid[iRow][iCol] = oCurrentPlayer.PLRget_color()
             self.move_history.append((iRow, iCol, oCurrentPlayer.PLRget_color()))
+
+            # On vérifie si on a déjà un gagnant ou pas
+            oWinner = self.GLIcheck_winner()
+            if oWinner:
+                print(f"{oWinner.PLRget_name()} est le gagnant !!")
+                return True
+            
             self.GLIpass_turn()
             return True
         return False
