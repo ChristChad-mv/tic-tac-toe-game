@@ -1,5 +1,6 @@
-from player import TPlayer, TColor
+from Player.player import TPlayer
 from typing import List, Tuple
+from Player.color import TColor
 
 class TPlayerIA(TPlayer):
     """

@@ -1,4 +1,4 @@
-from player import TPlayer, TColor
+from Player.player import TPlayer
 from typing import List, Tuple
 
 class TPlayerHumain(TPlayer):
@@ -38,10 +38,8 @@ class TPlayerHumain(TPlayer):
         """
         pass
 
-    def PLRjouer(self):
+    def PLRjouer(self, oGameLogic, iRow: int, iCol: int):
         """
-        Permet au joueur humain de jouer son tour.
-
-        Cette méthode déclenchera la sélection d'une case dans la grille.
+        Le joueur demande à jouer via GameLogic.
         """
-        pass
+        oGameLogic.GLImake_move(self, iRow, iCol)

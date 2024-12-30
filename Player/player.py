@@ -1,9 +1,4 @@
-from enum import Enum
-
-class TColor(Enum):
-    ROUGE = "rouge"
-    BLEU = "bleu"
-    VIDE = " "  # Représente une case vide dans la grille
+from Player.color import TColor
 
 class TPlayer:
     """
@@ -11,7 +6,7 @@ class TPlayer:
 
     Attributs :
     - cPLRName (str) : Nom du joueur.
-    - oPLRColor (TColor) : Couleur du joueur (rouge, bleu, etc.).
+    - oPLRColor (TColor) : Couleur du joueur
     - bPLRIsAI (bool) : Indique si le joueur est une IA (True) ou un humain (False).
     """
 
@@ -32,7 +27,7 @@ class TPlayer:
 
         @param oPlayerColor : Couleur du joueur (TColor)
         """
-        pass
+        self.oPLRColor = oPlayerColor
 
     def PLRget_color(self) -> TColor:
         """
@@ -40,7 +35,7 @@ class TPlayer:
 
         @return : TColor (ROUGE, BLEU, ou VIDE)
         """
-        pass
+        return self.oPLRColor
 
     def PLRget_name(self) -> str:
         """
@@ -58,10 +53,9 @@ class TPlayer:
         """
         self.cPLRName = cNewName
 
-    def PLRjouer(self):
+    def PLRjouer(self, oGameLogic, iRow: int, iCol: int):
         """
-        Méthode abstraite pour jouer un tour.
-
-        Cette méthode sera implémentée différemment par les classes enfants (humain ou IA).
+        Le joueur demande à jouer via GameLogic.
         """
-        pass
+        oGameLogic.GLImake_move(self, iRow, iCol)
+        

@@ -10,22 +10,12 @@ Classes:
 
 """
 
-from enum import Enum
 from typing import List
 
 from Player.player import TPlayer
 from Player.PlayerHumain import TPlayerHumain
 from Player.PlayerIA import TPlayerIA
-
-class TColor(Enum):
-    """
-    Énumération des couleurs disponibles pour les joueurs.
-    """
-    ROUGE = "rouge"
-    BLEU = "bleu"
-    VERT = "vert"
-    JAUNE = "jaune"
-    VIDE = " "  # Utilisé pour les cases vides
+from Player.color import TColor
 
 
 class GameLogic:
@@ -43,7 +33,7 @@ class GameLogic:
         move_history (list): Historique des mouvements effectués
     """
 
-    def __init__(self, iGLISize=3, iWinning_condition=3):
+    def __init__(self, oPlayer1=None, oPlayer2=None, iGLISize=3, iWinning_condition=3):
         """
         Initialise une nouvelle instance de jeu Tic-tac-toe.
 
@@ -58,8 +48,8 @@ class GameLogic:
         self.move_history = []
 
         # Création des joueurs
-        self.oGLIPlayer1 = TPlayerHumain("Jouer 1")
-        self.oGLIPlayer2 = TPlayerIA("Ordinateur")
+        self.oGLIPlayer1 = oPlayer1
+        self.oGLIPlayer2 = oPlayer2
         self.bGLIIsPlayerOneTurn = True  # Commence par le joueur humain
 
     def GLIinitialize_grid(self) -> List[List[TColor]]:
@@ -80,7 +70,7 @@ class GameLogic:
         return tGLIGrid
 
 
-    def GLImake_move(self, iRow: int, iCol: int, oColor: TColor) -> bool:
+    def GLImake_move(self, oPlayer: TPlayer, iRow: int, iCol: int) -> bool:
         """
         Place une couleur dans la grille à la position spécifiée.
 
@@ -90,19 +80,24 @@ class GameLogic:
         @return: True si le mouvement est valide, False sinon
         @rtype: bool
         """
-        oCurrentPlayer = self.GLIget_current_player()
-        if 0 <= iRow < self.iGLIsize and 0 <= iCol < self.iGLIsize and self.tGLIgrid[iRow][iCol] == TColor.VIDE:
-            self.tGLIgrid[iRow][iCol] = oCurrentPlayer.PLRget_color()
-            self.move_history.append((iRow, iCol, oCurrentPlayer.PLRget_color()))
+        oColor = oPlayer.PLRget_color()
+
+        if 0 <= iRow < self.iGLIsize \
+            and 0 <= iCol < self.iGLIsize \
+            and self.tGLIgrid[iRow][iCol] == TColor.VIDE:
+
+            self.tGLIgrid[iRow][iCol] = oColor
+            self.move_history.append((iRow, iCol, oColor))
 
             # On vérifie si on a déjà un gagnant ou pas
             oWinner = self.GLIcheck_winner()
             if oWinner:
                 print(f"{oWinner.PLRget_name()} est le gagnant !!")
-                return True
-            
-            self.GLIpass_turn()
-            return True
+            elif self.GLIcheck_draw():
+                print("Match nul !")
+            else:
+                self.GLIpass_turn()
+        
         return False
     
     def GLIget_current_player(self):
