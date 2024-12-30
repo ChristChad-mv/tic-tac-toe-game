@@ -11,13 +11,11 @@ Classes:
 """
 
 from enum import Enum
-from typing import List, Tuple
+from typing import List
 
 from Player.player import TPlayer
 from Player.PlayerHumain import TPlayerHumain
 from Player.PlayerIA import TPlayerIA
-
-TPlayer.PLRget_color
 
 class TColor(Enum):
     """
@@ -45,7 +43,7 @@ class GameLogic:
         move_history (list): Historique des mouvements effectués
     """
 
-    def __init__(self, iSize=3, iWinning_condition=3):
+    def __init__(self, iGLISize=3, iWinning_condition=3):
         """
         Initialise une nouvelle instance de jeu Tic-tac-toe.
 
@@ -54,13 +52,13 @@ class GameLogic:
         @param iGLIwinning_condition: Nombre de symboles alignés nécessaires pour gagner
         @type iGLIwinning_condition: int
         """
-        self.iGLIsize = iSize
+        self.iGLIsize = iGLISize
         self.iGLIwinning_condition = iWinning_condition
         self.tGLIgrid = self.GLIinitialize_grid()
         self.move_history = []
 
         # Création des joueurs
-        self.oGLIPlayer1 = TPlayerHumain("Christ")
+        self.oGLIPlayer1 = TPlayerHumain("Jouer 1")
         self.oGLIPlayer2 = TPlayerIA("Ordinateur")
         self.bGLIIsPlayerOneTurn = True  # Commence par le joueur humain
 
@@ -117,7 +115,7 @@ class GameLogic:
             return self.oGLIPlayer1
         else:
             return self.oGLIPlayer2
-
+        
     def GLIpass_turn(self):
         """
         Passe au joueur suivant après chaque coup.
@@ -216,6 +214,21 @@ class GameLogic:
           
         return None
     
+    def GLIcheck_draw(self) -> bool:
+        """
+        La fonction vérifier si on est dans le cas d'un match nul
+        Nous parcourons chaque ligne et chaque colonne, si vide... false sinon True
+        """
+        for iRow in range(self.iGLIsize):
+            for iCol in range(self.iGLIsize):
+                if self.tGLIgrid[iRow][iCol] == TColor.VIDE:
+                    return False
+
+        if self.GLIcheck_winner() is None:
+            return True
+        
+        return False
+
     def GLIcheck_winner(self) -> TPlayer | None:
         """
         Vérifie si un joueur a gagné.
@@ -241,9 +254,38 @@ class GameLogic:
         Retourne le joueur correspondant à la couleur spécifiée.
         On prends une couleur en paramètre et on retourne le joueur qui a cette couleur.
         Si c'est pas le joueur 1, c'est le joueur 2 surement.
-        @param oColor: Couleur du joueur 
+        @param oColor: Couleur qu'on prends en paramètre
 
         """
         if self.oGLIPlayer1.PLRget_color() == oColor:
             return self.oGLIPlayer1
         return self.oGLIPlayer2
+    
+    def GLIreset_game(self):
+        """
+        Cette fonction rénitialise tout le jeu en trois étapes : 
+            - Refait le grille
+            - Effaces les historiques des mouvements
+            - Remettre le tour à zero - donc l'humain commence
+        """
+        self.tGLIgrid = self.GLIinitialize_grid()
+        self.move_history.clear()
+        self.bGLIIsPlayerOneTurn = True
+
+
+    def GLIundo_move(self):
+        """
+        UN PEU PLUS COMPLIQUÉ À FAIRE : 
+        - considérer l'état
+        - 
+        """
+        pass
+    
+    def GLIset_players_name(self, sPlayer1_name: str, sPlayer2_name: str): 
+        """
+        Cette fonction enregistrer les noms des joueurs
+        Cela va nous aider pour la GUI. 
+        Permettant à la GUI de pouvoir afficher le nom des joueurs
+        """
+        self.oGLIPlayer1.PLRset_name(sPlayer1_name)
+        self.oGLIPlayer2.PLRset_name(sPlayer2_name)
