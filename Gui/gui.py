@@ -39,46 +39,46 @@ class GUI :
     def montrer_parametre(self): 
         if self.actuel_frame is not None : 
             self.actuel_frame.destroy()
-        self.actuel_frame=tk.Frame(self.window, bg="#29417d", width=600, height=300)
+        self.actuel_frame=tk.Frame(self.window, bg="#384b7a", width=600, height=300)
         self.actuel_frame.grid(pady=100, padx=80)
         self.actuel_frame.grid_propagate(False)
         # titre des parametres 
-        self.titre=tk.Label(self.actuel_frame, text="Paramètres du jeu",font=("Arial", 24), bg="#29417d")
+        self.titre=tk.Label(self.actuel_frame, text="Paramètres du jeu",font=("Arial", 24), bg="#384b7a",pady=20)
         self.titre.grid ( row=0, column=1, columnspan=2)
 
          # les boutons : 
          # Première ligne pour la taille de la grille
         self.taille_var = tk.StringVar()
-        self.taille_label = tk.Label(self.actuel_frame, text="Taille de la grille:" , bg="#29417d")
+        self.taille_label = tk.Label(self.actuel_frame, text="Taille de la grille:" , bg="#384b7a")
         self.taille_label.grid(row=1, column=0, padx=10, sticky="w")
-        self.radio_3x3 = tk.Radiobutton(self.actuel_frame, text="3x3", value="3x3",bg="#29417d", variable=self.taille_var)
-        self.radio_4x4 = tk.Radiobutton(self.actuel_frame, text="4x4", value="4x4", bg="#29417d",variable=self.taille_var)
-        self.radio_5x5 = tk.Radiobutton(self.actuel_frame, text="5x5", value="5x5",bg="#29417d",variable=self.taille_var)
+        self.radio_3x3 = tk.Radiobutton(self.actuel_frame, text="3x3", value="3x3",bg="#384b7a", variable=self.taille_var)
+        self.radio_4x4 = tk.Radiobutton(self.actuel_frame, text="4x4", value="4x4", bg="#384b7a",variable=self.taille_var)
+        self.radio_5x5 = tk.Radiobutton(self.actuel_frame, text="5x5", value="5x5",bg="#384b7a",variable=self.taille_var)
         self.radio_3x3.grid(row=1, column=1, sticky="w")
         self.radio_4x4.grid(row=1, column=2, sticky="w")
         self.radio_5x5.grid(row=1, column=3, sticky="w")
 
         # Deuxième ligne pour "cocher des cases"
         self.cocher_var = tk.BooleanVar()
-        self.cocher_label = tk.Label(self.actuel_frame, text="Cocher des cases",bg="#29417d")
+        self.cocher_label = tk.Label(self.actuel_frame, text="Cocher des cases",bg="#384b7a")
         self.cocher_label.grid(row=2, column=0, padx=10, sticky="w")
-        self.radio_oui = tk.Radiobutton(self.actuel_frame, text="Oui",value=True, variable=self.cocher_var,bg="#29417d")
-        self.radio_non = tk.Radiobutton(self.actuel_frame, text="Non",value=False, variable=self.cocher_var,bg="#29417d")
+        self.radio_oui = tk.Radiobutton(self.actuel_frame, text="Oui",value=True, variable=self.cocher_var,bg="#384b7a")
+        self.radio_non = tk.Radiobutton(self.actuel_frame, text="Non",value=False, variable=self.cocher_var,bg="#384b7a")
         self.radio_oui.grid(row=2, column=1, sticky="w")
         self.radio_non.grid(row=2, column=2, sticky="w")
 
         # Troisième ligne pour le nombre de cases à cocher
-        self.nb_cases_label = tk.Label(self.actuel_frame, text="Nombre de cases à cocher:", bg="#29417d" )
+        self.nb_cases_label = tk.Label(self.actuel_frame, text="Nombre de cases à cocher:", bg="#384b7a" )
         self.nb_cases_label.grid(row=3, column=0, padx=10, sticky="w")
         self.nb_case_frame = tk.Entry(self.actuel_frame)
         self.nb_case_frame.grid(row=3, column=1, pady=5)
 
         # Quatrième ligne pour le symbole choisi
         self.symbol_var = tk.BooleanVar()
-        self.symbol_label = tk.Label(self.actuel_frame, text="Symbole choisi", bg="#29417d")
+        self.symbol_label = tk.Label(self.actuel_frame, text="Symbole choisi", bg="#384b7a")
         self.symbol_label.grid(row=4, column=0, padx=10, sticky="w")
-        self.symbol_red = tk.Radiobutton(self.actuel_frame, text="Rouge", value=True, variable=self.symbol_var,bg="#29417d")
-        self.symbol_blue = tk.Radiobutton(self.actuel_frame, text="Bleu", value=False,variable=self.symbol_var,bg="#29417d")
+        self.symbol_red = tk.Radiobutton(self.actuel_frame, text="Rouge", value=True, variable=self.symbol_var,bg="#384b7a")
+        self.symbol_blue = tk.Radiobutton(self.actuel_frame, text="Bleu", value=False,variable=self.symbol_var,bg="#384b7a")
         self.symbol_red.grid(row=4, column=1, sticky="w")
         self.symbol_blue.grid(row=4, column=2, sticky="w")
 
@@ -86,54 +86,49 @@ class GUI :
         self.submit_button = tk.Button(self.actuel_frame, text="Valider", command=self.montrer_jeu,bg="#7683e7", fg="white", font=("Arial", 10), relief="solid", borderwidth=2, width=15, height=2)
         self.submit_button.grid(row=5, column=0, columnspan=3, pady=20)
     
-    def  montrer_jeu (self):
+    def montrer_jeu(self):
         # Détruire le précédent frame s'il existe
         if self.actuel_frame is not None: 
             self.actuel_frame.destroy()
 
-        # Créer un nouveau frame pour le jeu, prenant toute la place
-        self.actuel_frame = tk.Frame(self.window, bg="#a1b8cc")
+        # Créer un nouveau frame pour le jeu
+        self.actuel_frame = tk.Frame(self.window, bg="#a1b8dc")
         self.actuel_frame.grid(row=0, column=0, sticky="nsew")
+    
         # Configurer la taille de la fenêtre pour qu'elle prenne toute la place
         self.window.grid_rowconfigure(0, weight=1)
         self.window.grid_columnconfigure(0, weight=1)
 
-        # Le titre
-        self.titre = tk.Label(self.actuel_frame, text="Le jeu", bg="#a1b8cc", font=("Arial",16))
-        self.titre.grid(row=0, column=0, padx=10, sticky="w")
-        
         # frame qui va servir de menu 
-        self.menu_frame=tk.Frame(self.actuel_frame)
-        self.menu_frame.grid(row=0,column=0)
-        self.bouton1=tk.Button(self.menu_frame, text="Arreter la partie", command=self.montrer_acceuil)
-        self.menu_frame.grid(row=0,column=1)
-        self.bouton2=tk.Button(self.menu_frame, text="Undo") 
-        self.menu_frame.grid(row=0,column=2)
-        self.bouton1=tk.Button(self.menu_frame, text="Arreter la partie", command=self.montrer_jeu)
-        self.menu_frame.grid(row=0,column=3)
+        self.menu_frame = tk.Frame(self.actuel_frame,bg="#a1b8cc")
+        self.menu_frame.grid(row=0, column=0, columnspan=3, sticky="ew")
     
-        # Frame contenant les joueurs à droite
-        self.joueurs_frame =tk.Frame(self.actuel_frame, bg="#f0f0f0", width=200)
-        self.joueurs_frame.grid(row=1, column=2, padx=10, pady=10, sticky="ne")
+        self.bouton1 = tk.Button(self.menu_frame,fg="white",text="Arreter la partie", command=self.montrer_acceuil, relief="solid",bg="#384b7a", font=("Arial", 12, "bold"),width=15, height=2)
+        self.bouton1.grid(row=1, column=0, padx=10, pady=10)
 
+        self.bouton2 = tk.Button(self.menu_frame, text="Undo", fg="white", relief="solid", font=("Arial", 12, "bold"),width=15, bg="#384b7a",height=2)
+        self.bouton2.grid(row=1, column=1, padx=10, pady=10)
+
+        self.bouton3 = tk.Button(self.menu_frame, text="Vider la grille",bg="#384b7a", command=self.montrer_jeu, fg="white", relief="solid",font=("Arial", 12, "bold"), width=15, height=2)
+        self.bouton3.grid(row=1, column=2, padx=10, pady=10)
+
+        # Frame contenant les joueurs à droite
+        self.joueurs_frame = tk.Frame(self.actuel_frame, bg="#f0f0f0", width=200, height=300)
+        self.joueurs_frame.grid(row=1, column=5, padx= 10,pady=40)
+        self.joueurs_frame.grid_propagate(False)
+    
         # Titre de la frame des joueurs
-        self.titre_joueurs_frame = tk.Label(self.joueurs_frame, text="A qui le tour")
-        self.titre_joueurs_frame.grid(row=0, column=0, columnspan=2, pady= 10)
+        self.titre_joueurs_frame = tk.Label(self.joueurs_frame, text="A qui le tour",font=("Arial", 12, "bold"),padx=30)
+        self.titre_joueurs_frame.grid(row=0, column=0, columnspan=2, pady=10, sticky="e")
 
         # Boutons pour joueur et IA
-        self.joueur1 = tk.Button(self.joueurs_frame, text="Joueur", bg="#a1b8cc")
-        self.joueur1.grid(row=1, column=0, columnspan=2, pady=10)
+        self.joueur1 = tk.Button(self.joueurs_frame, text="Joueur", bg="#a1b8cc",fg="white", relief="solid",font=("Arial", 12, "bold"), width=15, height=2, padx=13)
+        self.joueur1.grid(row=1, column=1, columnspan=2, pady=10)
 
-        self.joueurIA = tk.Button(self.joueurs_frame, text="Ordinateur", bg="#a1b8cc")
-        self.joueurIA.grid(row=2, column=0, columnspan=2, pady=10)
+        self.joueurIA = tk.Button(self.joueurs_frame, text="Ordinateur", bg="#a1b8cc",fg="white", relief="solid",font=("Arial", 12, "bold"), width=15, height=2, padx=13)
+        self.joueurIA.grid(row=2, column=1, columnspan=2, pady=10)
 
-        # Configurer la largeur des colonnes et des lignes du grid
-        self.actuel_frame.grid_columnconfigure(0, weight=1)
-        self.actuel_frame.grid_columnconfigure(1, weight=3)
-        self.actuel_frame.grid_columnconfigure(2, weight=1)
-
-        # S'assurer que le contenu à droite s'étend correctement
-        self.actuel_frame.grid_rowconfigure(1, weight=3)
+         
 
 
         """self.joueur1=tk.Button(self.joueurs_frame,text=self.PLRget_name())
