@@ -89,10 +89,10 @@ class GameLogic:
             self.move_history.append((iRow, iCol, oColor))
 
             # On vérifie si on a déjà un gagnant ou pas
-            oWinner = self.GLIcheck_winner()
+            oWinner = self.GLIcheck_winner(oColor)
             if oWinner:
                 print(f"{oWinner.PLRget_name()} est le gagnant !!")
-            elif self.GLIcheck_draw():
+            elif self.GLIcheck_draw(oColor):
                 print("Match nul !")
             else:
                 self.GLIpass_turn()
@@ -196,7 +196,7 @@ class GameLogic:
           
         return None
     
-    def GLIcheck_draw(self) -> bool:
+    def GLIcheck_draw(self, oColor: TColor) -> bool:
         """
         La fonction vérifier si on est dans le cas d'un match nul
         Nous parcourons chaque ligne et chaque colonne, si vide... false sinon True
@@ -206,7 +206,7 @@ class GameLogic:
                 if self.tGLIgrid[iRow][iCol] == TColor.VIDE:
                     return False
 
-        if self.GLIcheck_winner() is None:
+        if self.GLIcheck_winner(oColor) is None:
             return True
         
         return False
