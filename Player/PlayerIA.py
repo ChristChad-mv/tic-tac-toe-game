@@ -38,7 +38,7 @@ class TPlayerIA(TPlayer):
                     moves.append((row, col))
         return moves
     
-    def PLRgenerate_grid_based_on_next_move(self, game: GameLogic, row: int, col: int) -> GameLogic:
+    def PLRsimulate_move(self, game: GameLogic, row: int, col: int) -> GameLogic:
         """
         Génère une nouvelle instance du jeu en simulant un coup.
         """
@@ -76,7 +76,7 @@ class TPlayerIA(TPlayer):
             best_score = float('-inf')
             best_move = None
             for row, col in possible_moves:
-                simulated_game = self.PLRgenerate_grid_based_on_next_move(game, row, col)
+                simulated_game = self.PLRsimulate_move(game, row, col)
                 score, _ = self.PLRminimax(simulated_game, iGMdepth - 1, False)
                 if score > best_score:
                     best_score = score
@@ -86,7 +86,7 @@ class TPlayerIA(TPlayer):
             best_score = float('inf')
             best_move = None
             for row, col in possible_moves:
-                simulated_game = self.PLRgenerate_grid_based_on_next_move(game, row, col)
+                simulated_game = self.PLRsimulate_move(game, row, col)
                 score, _ = self.PLRminimax(simulated_game, iGMdepth - 1, True)
                 if score < best_score:
                     best_score = score
