@@ -37,3 +37,18 @@ class TPlayerIA(TPlayer):
                 if game.tGLIgrid[row][col] == TColor.VIDE:
                     moves.append((row, col))
         return moves
+    
+    def generate_grid_based_on_next_move(self, game: GameLogic, row: int, col: int) -> GameLogic:
+        """
+        Génère une nouvelle instance du jeu en simulant un coup.
+        """
+        simulated_game = deepcopy(game)
+        
+        # Modification directe de la grille pour la simulation
+        if simulated_game.bGLIIsPlayerOneTurn:
+            simulated_game.tGLIgrid[row][col] = simulated_game.oGLIPlayer1.PLRget_color()
+        else:
+            simulated_game.tGLIgrid[row][col] = simulated_game.oGLIPlayer2.PLRget_color()
+        
+        simulated_game.bGLIIsPlayerOneTurn = not simulated_game.bGLIIsPlayerOneTurn
+        return simulated_game
