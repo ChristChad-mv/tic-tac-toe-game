@@ -1,5 +1,6 @@
 from Player.player import TPlayer
 from typing import List, Tuple
+from game_logic import GameLogic
 
 class TPlayerHumain(TPlayer):
     """
@@ -9,16 +10,16 @@ class TPlayerHumain(TPlayer):
     - TPlayer : Reprend les attributs communs à tous les joueurs.
 
     Attributs supplémentaires :
-    - tPLRMoveHistory (list) : Liste des coups joués par le joueur pour permettre l'annulation (Undo).
+    - tPLRMoveHistory (list) : Liste des coups joués par le joueur.
     """
 
-    def __init__(self, cName: str):
+    def __init__(self, cPLRName: str):
         """
         Initialise un joueur humain avec une liste pour l’historique des coups.
 
-        @param cName : Nom du joueur humain
+        @param cPLRName : Nom du joueur humain
         """
-        super().__init__(cName, bIsAI=False)
+        super().__init__(cPLRName, bIsAI=False)
         self.tPLRMoveHistory: List[Tuple[int, int]] = []
 
     def PLRrecord_move(self, iRow: int, iCol: int):
@@ -28,7 +29,7 @@ class TPlayerHumain(TPlayer):
         @param iRow : Ligne où le coup est joué
         @param iCol : Colonne où le coup est joué
         """
-        pass
+        self.tPLRMoveHistory.append((iRow, iCol))
 
     def PLRundo_last_move(self) -> Tuple[int, int] | None:
         """
@@ -36,10 +37,13 @@ class TPlayerHumain(TPlayer):
 
         @return : Tuple contenant (ligne, colonne) du dernier coup annulé, ou None si aucun coup à annuler.
         """
-        pass
+        if self.tPLRMoveHistory:
+            return self.tPLRMoveHistory.pop()
+        return None
 
-    def PLRjouer(self, oGameLogic, iRow: int, iCol: int):
+    def PLRjouer(self, oGameLogic: GameLogic, iRow: int, iCol: int):
         """
         Le joueur demande à jouer via GameLogic.
         """
-        oGameLogic.GLImake_move(self, iRow, iCol)
+        if oGameLogic.GLImake_move(self, iRow, iCol):
+            self.PLRrecord_move(iRow, iCol)
