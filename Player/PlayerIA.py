@@ -24,7 +24,7 @@ class TPlayerIA(TPlayer):
         """
         super().__init__(cPLRName, bIsAI=True)
 
-    def get_possible_moves(self, game: GameLogic) -> List[Tuple[int, int]]:
+    def PLRget_possible_moves(self, game: GameLogic) -> List[Tuple[int, int]]:
         """
         Retourne toutes les cases vides de la grille comme coups possibles.
 
@@ -38,7 +38,7 @@ class TPlayerIA(TPlayer):
                     moves.append((row, col))
         return moves
     
-    def generate_grid_based_on_next_move(self, game: GameLogic, row: int, col: int) -> GameLogic:
+    def PLRgenerate_grid_based_on_next_move(self, game: GameLogic, row: int, col: int) -> GameLogic:
         """
         Génère une nouvelle instance du jeu en simulant un coup.
         """
@@ -52,3 +52,55 @@ class TPlayerIA(TPlayer):
         
         simulated_game.bGLIIsPlayerOneTurn = not simulated_game.bGLIIsPlayerOneTurn
         return simulated_game
+    
+    def PLRminimax(self, game: GameLogic, iGMdepth: int, bPLRisMaximizing: bool) -> Tuple[int, Tuple[int, int] | None]:
+        """
+        Implémente l'algorithme Minimax pour évaluer les coups possibles.
+
+        @param game : Instance du jeu 
+        @param iGMdepth : Profondeur actuelle de la recherche Minimax
+        @param bPLRisMaximizing : Booléen indiquant si l'on maximise (True) ou minimise (False) le score
+        @return : Tuple contenant le meilleur score et le meilleur mouvement (ligne, colonne)
+        """
+        
+        if game.GLIcheck_winner(self.PLRget_color()):
+            return 10, None
+        elif game.GLIcheck_winner(game.oGLIPlayer1.PLRget_color()):
+            return -10, None
+        elif game.GLIcheck_draw(self.PLRget_color()) or iGMdepth == 0:
+            return 0, None
+
+        possible_moves = self.PLRget_possible_moves(game)
+        
+        if bPLRisMaximizing:
+            best_score = float('-inf')
+            best_move = None
+            for row, col in possible_moves:
+                simulated_game = self.PLRgenerate_grid_based_on_next_move(game, row, col)
+                score, _ = self.PLRminimax(simulated_game, iGMdepth - 1, False)
+                if score > best_score:
+                    best_score = score
+                    best_move = (row, col)
+            return best_score, best_move
+        else:
+            best_score = float('inf')
+            best_move = None
+            for row, col in possible_moves:
+                simulated_game = self.PLRgenerate_grid_based_on_next_move(game, row, col)
+                score, _ = self.PLRminimax(simulated_game, iGMdepth - 1, True)
+                if score < best_score:
+                    best_score = score
+                    best_move = (row, col)
+            return best_score, best_move
+        
+    def PLRjouer(self, game: GameLogic):
+        """
+        Joue automatiquement le meilleur coup.
+
+        L'IA utilise Minimax pour choisir la meilleure option disponible.
+        @param game : Instance actuelle du jeu (GameLogic)
+        """
+        _, best_move = self.PLRminimax(game, iGMdepth=3, bPLRisMaximizing=True) 
+        if best_move:
+            row, col = best_move
+            game.GLImake_move(self, row, col)
