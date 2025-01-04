@@ -1,8 +1,9 @@
 from Player.color import TColor
+from game_logic import GameLogic
 
 class TPlayer:
     """
-    Classe de base représentant un joueur de Tic Tac Toe.
+    Classe Mère représentant un joueur de Tic Tac Toe.
 
     Attributs :
     - cPLRName (str) : Nom du joueur.
@@ -10,14 +11,14 @@ class TPlayer:
     - bPLRIsAI (bool) : Indique si le joueur est une IA (True) ou un humain (False).
     """
 
-    def __init__(self, cName: str, bIsAI=False):
+    def __init__(self, cPLRName: str, bIsAI=False):
         """
         Initialise un joueur avec un nom et définit s'il s'agit d'une IA ou d'un humain.
 
         @param cName : Nom du joueur
         @param bIsAI : Booléen indiquant si le joueur est une IA (par défaut False)
         """
-        self.cPLRName = cName
+        self.cPLRName = cPLRName
         self.oPLRColor = None
         self.bPLRIsAI = bIsAI
 
@@ -45,15 +46,15 @@ class TPlayer:
         """
         return self.cPLRName
 
-    def PLRset_name(self, cNewName: str):
+    def PLRset_name(self, cPLRNewName: str):
         """
         Modifie le nom du joueur.
 
         @param cNewName : Nouveau nom du joueur
         """
-        self.cPLRName = cNewName
+        self.cPLRName = cPLRNewName
 
-    def PLRjouer(self, oGameLogic, iRow: int, iCol: int):
+    def PLRjouer(self, oGameLogic: GameLogic, iRow: int, iCol: int):
         """
         Le joueur demande à jouer via GameLogic.
         """
