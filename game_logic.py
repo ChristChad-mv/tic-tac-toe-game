@@ -94,8 +94,9 @@ class GameLogic:
                 print(f"{oWinner.PLRget_name()} est le gagnant !!")
             elif self.GLIcheck_draw(oColor):
                 print("Match nul !")
-            else:
-                self.GLIpass_turn()
+                
+            self.GLIpass_turn()
+            return True
         
         return False
     
