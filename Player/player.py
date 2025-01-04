@@ -1,5 +1,4 @@
 from Player.color import TColor
-from game_logic import GameLogic
 
 class TPlayer:
     """
@@ -54,7 +53,7 @@ class TPlayer:
         """
         self.cPLRName = cPLRNewName
 
-    def PLRjouer(self, oGameLogic: GameLogic, iRow: int, iCol: int):
+    def PLRjouer(self, oGameLogic, iRow: int, iCol: int):
         """
         Le joueur demande à jouer via GameLogic.
         """
