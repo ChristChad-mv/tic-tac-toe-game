@@ -8,35 +8,52 @@ class GUI :
     """
     Pour un rendu plus acceptable nous avons verouillé la fonctionnalité d'accroitre la fenetre
     """
-    def __init__(self):
+    def __init__(self, fenetre):
         self.fenetre = tk.Tk()
         self.fenetre.title("TIC-TAC-TOE")
         self.fenetre.geometry(f"{800}x{600}")
         self.fenetre.resizable(width=False, height=False)
-        self.actuel_frame =None
-        self.montrer_acceuil()
+
+        self.player_name = tk.Frame(self.fenetre)
+        self.player_ia = tk.Frame(self.fenetre)
+
+        # Frames
+        self.frame_home = tk.Frame(self.fenetre)
+        self.frame_settings = tk.Frame(self.fenetre)
+        self.frame_game = tk.Frame(self.fenetre)
+
+        self.frame_home()
+        self.frame_settings()
+        self.frame_game()
+
+        self.display_frame(self.frame_home)
+
+        self.fenetre.mainloop()
     
-    # Methode qui initialise le frame de la page d'acceuil
+    # Page d'acceuil
     """
     cette methode initialise le frame ou se trouve les boutons 
     pour acceder à une partie du jeu ou la fentre des parametres
     """
-    def montrer_acceuil(self):
+    def frame_home(self):
         #ici on nettoie la fentre s'il y avait un frame avant
         if self.actuel_frame is not None :
             self.actuel_frame.destroy()
-        image_arriere = Image.open("Gui/picture.jpg")  
+
+        image_arriere = Image.open("picture.jpg")  
         image_arriere = image_arriere.resize((800, 600), Image.Resampling.LANCZOS)   
         self.convertir_image = ImageTk.PhotoImage(image_arriere)
+
         # inserer dans la fenetre l'image 
         self.bg_label = tk.Label(self.fenetre, image=self.convertir_image)
         self.bg_label.place(relwidth=1, relheight=1)
         
         # le frame acceuil :
-        self.actuel_frame=tk.Frame(self.fenetre, bg="#29417d", width=400, height=300)
-        self.actuel_frame.pack(pady=100)
-        self.actuel_frame.pack_propagate(False)
+        self.frame_home=tk.Frame(self.fenetre, bg="#29417d", width=400, height=300)
+        self.frame_home.pack(pady=100)
+        self.frame_home.pack_propagate(False)
          
+        # affichage du titre du jeu
         self.titre = tk.Label(self.actuel_frame, text="TIC-TAC-TOE", fg="white" ,font=("Arial", 24), bg="#29417d")
         self.titre.pack(padx=20, pady=20) 
 
@@ -44,7 +61,7 @@ class GUI :
         self.commencer= tk.Button(self.actuel_frame,text="Lancer une partie", command=self.montrer_jeu_defaut,bg="#7683e7", fg="white", font=("Arial", 14), relief="solid", borderwidth=2, width=20, height=2)
         self.commencer.pack(pady=20)
 
-        self.parametre=tk.Button(self.actuel_frame,text="Paramétres", command=self.montrer_parametre ,bg="#7683e7", fg="white", font=("Arial", 14),relief="solid", borderwidth=2, width=20, height=2)
+        self.parametre=tk.Button(self.actuel_frame,text="Paramétres", command=self.display_frame(self.frame_settings) ,bg="#7683e7", fg="white", font=("Arial", 14),relief="solid", borderwidth=2, width=20, height=2)
         self.parametre.pack(pady=20)
     
     # La methode pour la fenetre paramtres : 
@@ -53,7 +70,17 @@ class GUI :
     au joueur de choisir ses preferences tel la taille de la grille 
     griser des cases ou pas 
     """
-    def montrer_parametre(self): 
+
+    ###### Gestion des frames
+    def display_frame(self, frame):
+        frame.tkraise()
+        frame.pack()
+
+    def make_move():
+        GameLogic.GLIinitialize_grid()
+        print("Initiailié")
+
+    def frame_settings(self): 
         if self.actuel_frame is not None : 
             self.actuel_frame.destroy()
         self.actuel_frame=tk.Frame(self.fenetre, bg="#384b7a", width=600, height=300)
@@ -62,6 +89,9 @@ class GUI :
         # titre des parametres 
         self.titre=tk.Label(self.actuel_frame, text="Paramètres du jeu",font=("Arial", 24), bg="#384b7a",pady=20)
         self.titre.grid ( row=0, column=1, columnspan=2)
+
+        # Nom du joueur
+        tk.Label(self.parametre, )
 
          # les boutons : 
          # Première ligne pour la taille de la grille
@@ -166,7 +196,7 @@ class GUI :
                 bouton = tk.Button(self.grille_frame, text=f"({i},{j})", command=lambda x=i, y=j: print(f"Button {x},{y} clicked"))
                 bouton.grid(row=i, column=j, sticky="nsew", padx=0, pady=0)
 
-    def montrer_jeu_defaut(self):
+    def frame_play_by_default(self):
         # Détruire le précédent frame s'il existe
         if self.actuel_frame is not None: 
             self.actuel_frame.destroy()
