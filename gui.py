@@ -15,7 +15,7 @@ class TicTacToeGUI:
 
         # Logique de jeu
         self.GUI_game_logic = game_logic
-        self.GUI_grid_size = 3  # Par défaut
+        self.GUI_grid_size = 3
 
         # Frames
         self.GUI_current_frame = None
@@ -40,6 +40,7 @@ class TicTacToeGUI:
 
     def GUI_init_home_frame(self):
         """Initialise la page d'accueil."""
+
         self.GUI_frame_home.configure(bg="#29417d")
         tk.Label(self.GUI_frame_home, text="Bienvenue à Tic Tac Toe!",
                  font=("Arial", 24), bg="#29417d", fg="white").pack(pady=20)
@@ -77,9 +78,9 @@ class TicTacToeGUI:
         grid_size_var = tk.IntVar(value=self.GUI_grid_size)
         tk.Radiobutton(self.GUI_frame_settings, text="3x3", variable=grid_size_var, value=3,
                     font=("Arial", 12), bg="#384b7a", fg="white").pack()
-        tk.Radiobutton(self.GUI_frame_settings, text="4x4", variable=grid_size_var, value=4,
-                    font=("Arial", 12), bg="#384b7a", fg="white").pack()
         tk.Radiobutton(self.GUI_frame_settings, text="5x5", variable=grid_size_var, value=5,
+                    font=("Arial", 12), bg="#384b7a", fg="white").pack()
+        tk.Radiobutton(self.GUI_frame_settings, text="7x7", variable=grid_size_var, value=7,
                     font=("Arial", 12), bg="#384b7a", fg="white").pack()
 
         # Cocher des cases
@@ -121,8 +122,7 @@ class TicTacToeGUI:
             "Jaune": TColor.JAUNE,
             "Orange": TColor.ORANGE
         }
-        
-        # Mise à jour du joueur
+
         self.GUI_game_logic.GLIset_players_name(player_name, "Ordinateur")
         self.GUI_game_logic.oGLIPlayer1.PLRset_color(color_mapping[color])
         
@@ -143,7 +143,7 @@ class TicTacToeGUI:
         tk.Button(menu_frame, text="Undo", font=("Arial", 12), bg="#384b7a", fg="white", width=15, height=2).pack(side="left", padx=10)
         tk.Button(menu_frame, text="Vider la grille", command=self.GUI_reset_game,
                   font=("Arial", 12), bg="#384b7a", fg="white", width=15, height=2).pack(side="left", padx=10)
-
+        """
         # Cadre pour les joueurs
         joueurs_frame = tk.Frame(self.GUI_frame_game, bg="#f0f0f0", width=200, height=300)
         joueurs_frame.pack(side="right", padx=10, pady=40, fill="y")
@@ -153,26 +153,26 @@ class TicTacToeGUI:
 
         tk.Button(joueurs_frame, text="Joueur", bg="#a1b8cc", fg="white", font=("Arial", 12, "bold"), width=15, height=2).pack(pady=10)
         tk.Button(joueurs_frame, text="Ordinateur", bg="#a1b8cc", fg="white", font=("Arial", 12, "bold"), width=15, height=2).pack(pady=10)
-
+        """
         # Grille de jeu
         self.GUI_grid_frame = tk.Frame(self.GUI_frame_game, bg="#a1b8dc")
         self.GUI_grid_frame.pack(expand=True)
 
-        self.GUI_create_grid()
+        self.GUI_create_grid(3)
 
-    def GUI_create_grid(self):
+    def GUI_create_grid(self, iNewSize):
         """Crée une grille de boutons."""
         for widget in self.GUI_grid_frame.winfo_children():
             widget.destroy()
 
         self.GUI_grid_buttons = []
-        for i in range(self.GUI_grid_size):
+        for i in range(iNewSize):
             row = []
-            for j in range(self.GUI_grid_size):
+            for j in range(iNewSize):
                 btn = tk.Button(self.GUI_grid_frame, text="", font=("Arial", 20),
                                 width=5, height=2,
                                 command=lambda iRow=i, iCol=j: self.GUI_make_move(iRow, iCol))
-                btn.grid(row=i, column=j, padx=5, pady=5)
+                btn.grid(row=i, column=j, padx=0, pady=0)
                 row.append(btn)
             self.GUI_grid_buttons.append(row)
 
@@ -183,6 +183,7 @@ class TicTacToeGUI:
         if not current_player.bPLRIsAI:
             # Si c'est le joueur humain qui joue
             current_player.PLRjouer(self.GUI_game_logic, row, col)
+            print(f"{row}, {col}")
             self.GUI_update_button(row, col)
             
             # Vérification de l'état du jeu
@@ -237,7 +238,7 @@ class TicTacToeGUI:
         """Définit la taille de la grille."""
         self.GUI_grid_size = iNewSize
         self.GUI_game_logic.GLIresize_grid(iNewSize)
-        self.GUI_create_grid()
+        self.GUI_create_grid(iNewSize)
         self.GUI_display_frame(self.GUI_frame_game)
 
     def GUI_run(self):

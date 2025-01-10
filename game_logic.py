@@ -29,7 +29,7 @@ class GameLogic:
         move_history (list): Historique des mouvements effectués
     """
 
-    def __init__(self, oPlayer1=None, oPlayer2=None, iGLISize=3, iWinning_condition=3):
+    def __init__(self, oPlayer1=None, oPlayer2=None, iGLISize=3, iGLIWinning_condition=3):
         """
         Constructor --> Initialise une nouvelle instance de la logique du jeu Tic-tac-toe.
 
@@ -38,8 +38,8 @@ class GameLogic:
         @param iGLIsize: Taille de la grille (iGLIsize x iGLIsize)
         @param iGLIwinning_condition: Nombre de symboles alignés nécessaires pour gagner
         """
-        self.iGLIsize = iGLISize
-        self.iGLIwinning_condition = iWinning_condition
+        self.iGLISize = iGLISize
+        self.iGLIWinning_condition = iGLIWinning_condition
         self.tGLIgrid = self.GLIinitialize_grid()
         self.move_history = []
 
@@ -50,20 +50,18 @@ class GameLogic:
         # Passage de tour, commencer par le joueur 1
         self.bGLIIsPlayerOneTurn = True 
 
-
-    ### TO REMOVE
     def GLIinitialize_grid(self) -> List[List[TColor]]:
         """
         Crée une grille vide avec des cellules 'VIDE'.
         On retourne la grille créée.
 
-        @return: Grille de taille iGLIsize x iGLIsize avec des cases vides.
+        @return: Grille de taille iGLISize x iGLISize avec des cases vides.
         """
         tGLIGrid: List[List[TColor]] = []
 
-        for _ in range(self.iGLIsize):
+        for _ in range(self.iGLISize):
             tRow: List[TColor] = []
-            for _ in range(self.iGLIsize):
+            for _ in range(self.iGLISize):
                 tRow.append(TColor.VIDE)
             tGLIGrid.append(tRow)
 
@@ -84,8 +82,8 @@ class GameLogic:
 
         oColor = oPlayer.PLRget_color()
 
-        if 0 <= iRow < self.iGLIsize \
-            and 0 <= iCol < self.iGLIsize \
+        if 0 <= iRow < self.iGLISize \
+            and 0 <= iCol < self.iGLISize \
             and self.tGLIgrid[iRow][iCol] == TColor.VIDE:
 
             self.tGLIgrid[iRow][iCol] = oColor
@@ -131,8 +129,8 @@ class GameLogic:
         @param iNewSize: Nouvelle taille de la grille
         """
         if iNewSize >= 3 or iNewSize <= 7:
-            self.iGLIsize = iNewSize
-            self.iGLIwinning_condition = iNewSize - 1
+            self.iGLISize = iNewSize
+            self.iGLIWinning_condition = iNewSize
         else:
             print("La taille de la grille doit être comprise entre 3 et 7.")
 
@@ -147,10 +145,10 @@ class GameLogic:
         @return: Le joueur qui a gagné, ou None si aucun joueur n'a gagné
         @rtype: TPlayer | None
         """
-        if iCol + self.iGLIwinning_condition > self.iGLIsize:
+        if iCol + self.iGLIWinning_condition > self.iGLISize:
             return None
 
-        for i in range(self.iGLIwinning_condition):
+        for i in range(self.iGLIWinning_condition):
             if self.tGLIgrid[iRow][iCol + i] != oColor:
                 return None
             
@@ -167,10 +165,10 @@ class GameLogic:
         @return: Le joueur qui a gagné, ou None si aucun joueur n'a gagné
         @rtype: TPlayer | None
         """
-        if iRow + self.iGLIwinning_condition > self.iGLIsize:
+        if iRow + self.iGLIWinning_condition > self.iGLISize:
             return None
 
-        for i in range(self.iGLIwinning_condition):
+        for i in range(self.iGLIWinning_condition):
             if self.tGLIgrid[iRow + i][iCol] != oColor:
                 return None
         return self.GLIget_player_by_color(oColor)
@@ -185,15 +183,15 @@ class GameLogic:
         @rtype: TPlayer | None
         """
         # Vérifie la diagonale descendante (de gauche à droite)
-        if iRow + self.iGLIwinning_condition <= self.iGLIsize and iCol + self.iGLIwinning_condition <= self.iGLIsize:
-            for i in range(self.iGLIwinning_condition):
+        if iRow + self.iGLIWinning_condition <= self.iGLISize and iCol + self.iGLIWinning_condition <= self.iGLISize:
+            for i in range(self.iGLIWinning_condition):
                 if self.tGLIgrid[iRow + i][iCol + i] != oColor:
                     return None
             return self.GLIget_player_by_color(oColor)
         
         # Vérifie la diagonale montante (de droite à gauche)
-        if iRow + self.iGLIwinning_condition <= self.iGLIsize and iCol - self.iGLIwinning_condition + 1 >= 0:
-            for i in range(self.iGLIwinning_condition):
+        if iRow + self.iGLIWinning_condition <= self.iGLISize and iCol - self.iGLIWinning_condition + 1 >= 0:
+            for i in range(self.iGLIWinning_condition):
                 if self.tGLIgrid[iRow + i][iCol - i] != oColor:
                     return None
             return self.GLIget_player_by_color(oColor)
@@ -205,8 +203,8 @@ class GameLogic:
         La fonction vérifier si on est dans le cas d'un match nul
         Nous parcourons chaque ligne et chaque colonne, si vide... false sinon True
         """
-        for iRow in range(self.iGLIsize):
-            for iCol in range(self.iGLIsize):
+        for iRow in range(self.iGLIWinning_condition):
+            for iCol in range(self.iGLIWinning_condition):
                 if self.tGLIgrid[iRow][iCol] == TColor.VIDE:
                     return False
 
@@ -219,8 +217,8 @@ class GameLogic:
         """
         Vérifie si un joueur a gagné.
         """
-        for iRow in range(self.iGLIsize):
-            for iCol in range(self.iGLIsize):
+        for iRow in range(self.iGLIWinning_condition):
+            for iCol in range(self.iGLIWinning_condition):
                 oWinner = self.GLIcheck_line(iRow, iCol, oColor)
                 if oWinner:
                     return oWinner
