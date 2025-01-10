@@ -1,280 +1,252 @@
 import tkinter as tk
+from tkinter import messagebox
 from PIL import Image, ImageTk
 from game_logic import GameLogic
-from Player.PlayerHumain import TPlayer
+from Player.player import TPlayer
+from Player.color import TColor
 
-class GUI :
-    # Constructeur qui initialise la fenetre du jeu : 
-    """
-    Pour un rendu plus acceptable nous avons verouillé la fonctionnalité d'accroitre la fenetre
-    """
-    def __init__(self, fenetre):
-        self.fenetre = tk.Tk()
-        self.fenetre.title("TIC-TAC-TOE")
-        self.fenetre.geometry(f"{800}x{600}")
-        self.fenetre.resizable(width=False, height=False)
+class TicTacToeGUI:
+    def __init__(self, game_logic):
+        # Initialisation de la fenêtre principale
+        self.GUI_fenetre = tk.Tk()
+        self.GUI_fenetre.title("TIC-TAC-TOE")
+        self.GUI_fenetre.geometry("800x600")
+        self.GUI_fenetre.resizable(width=False, height=False)
 
-        self.player_name = tk.Frame(self.fenetre)
-        self.player_ia = tk.Frame(self.fenetre)
+        # Logique de jeu
+        self.GUI_game_logic = game_logic
+        self.GUI_grid_size = 3  # Par défaut
 
         # Frames
-        self.frame_home = tk.Frame(self.fenetre)
-        self.frame_settings = tk.Frame(self.fenetre)
-        self.frame_game = tk.Frame(self.fenetre)
+        self.GUI_current_frame = None
+        self.GUI_frame_home = tk.Frame(self.GUI_fenetre)
+        self.GUI_frame_settings = tk.Frame(self.GUI_fenetre)
+        self.GUI_frame_game = tk.Frame(self.GUI_fenetre)
 
-        self.frame_home()
-        self.frame_settings()
-        self.frame_game()
+        # Initialisation des frames
+        self.GUI_init_home_frame()
+        self.GUI_init_settings_frame()
+        self.GUI_init_game_frame()
 
-        self.display_frame(self.frame_home)
+        # Afficher l'accueil au démarrage
+        self.GUI_display_frame(self.GUI_frame_home)
 
-        self.fenetre.mainloop()
-    
-    # Page d'acceuil
-    """
-    cette methode initialise le frame ou se trouve les boutons 
-    pour acceder à une partie du jeu ou la fentre des parametres
-    """
-    def frame_home(self):
-        #ici on nettoie la fentre s'il y avait un frame avant
-        if self.actuel_frame is not None :
-            self.actuel_frame.destroy()
+    def GUI_display_frame(self, frame):
+        """Affiche une frame spécifique."""
+        if self.GUI_current_frame is not None:
+            self.GUI_current_frame.pack_forget()
+        frame.pack(fill="both", expand=True)
+        self.GUI_current_frame = frame
 
-        image_arriere = Image.open("picture.jpg")  
-        image_arriere = image_arriere.resize((800, 600), Image.Resampling.LANCZOS)   
-        self.convertir_image = ImageTk.PhotoImage(image_arriere)
+    def GUI_init_home_frame(self):
+        """Initialise la page d'accueil."""
+        self.GUI_frame_home.configure(bg="#29417d")
+        tk.Label(self.GUI_frame_home, text="Bienvenue à Tic Tac Toe!",
+                 font=("Arial", 24), bg="#29417d", fg="white").pack(pady=20)
 
-        # inserer dans la fenetre l'image 
-        self.bg_label = tk.Label(self.fenetre, image=self.convertir_image)
-        self.bg_label.place(relwidth=1, relheight=1)
-        
-        # le frame acceuil :
-        self.frame_home=tk.Frame(self.fenetre, bg="#29417d", width=400, height=300)
-        self.frame_home.pack(pady=100)
-        self.frame_home.pack_propagate(False)
-         
-        # affichage du titre du jeu
-        self.titre = tk.Label(self.actuel_frame, text="TIC-TAC-TOE", fg="white" ,font=("Arial", 24), bg="#29417d")
-        self.titre.pack(padx=20, pady=20) 
+        tk.Button(self.GUI_frame_home, text="Jouer",
+                  command=lambda: self.GUI_display_frame(self.GUI_frame_game),
+                  font=("Arial", 14), bg="#7683e7", fg="white", width=20, height=2).pack(pady=10)
 
-        # les boutons de l'acceuil
-        self.commencer= tk.Button(self.actuel_frame,text="Lancer une partie", command=self.montrer_jeu_defaut,bg="#7683e7", fg="white", font=("Arial", 14), relief="solid", borderwidth=2, width=20, height=2)
-        self.commencer.pack(pady=20)
+        tk.Button(self.GUI_frame_home, text="Paramètres",
+                  command=lambda: self.GUI_display_frame(self.GUI_frame_settings),
+                  font=("Arial", 14), bg="#7683e7", fg="white", width=20, height=2).pack(pady=10)
 
-        self.parametre=tk.Button(self.actuel_frame,text="Paramétres", command=self.display_frame(self.frame_settings) ,bg="#7683e7", fg="white", font=("Arial", 14),relief="solid", borderwidth=2, width=20, height=2)
-        self.parametre.pack(pady=20)
-    
-    # La methode pour la fenetre paramtres : 
-    """" 
-    cette methode initialise la fentre parametre qui va permettre 
-    au joueur de choisir ses preferences tel la taille de la grille 
-    griser des cases ou pas 
-    """
+        tk.Button(self.GUI_frame_home, text="Quitter",
+                  command=self.GUI_fenetre.quit,
+                  font=("Arial", 14), bg="red", fg="white", width=20, height=2).pack(pady=10)
 
-    ###### Gestion des frames
-    def display_frame(self, frame):
-        frame.tkraise()
-        frame.pack()
+    def GUI_init_settings_frame(self):
+        """Initialise la page des paramètres."""
+        self.GUI_frame_settings.configure(bg="#384b7a")
 
-    def make_move():
-        GameLogic.GLIinitialize_grid()
-        print("Initiailié")
-
-    def frame_settings(self): 
-        if self.actuel_frame is not None : 
-            self.actuel_frame.destroy()
-        self.actuel_frame=tk.Frame(self.fenetre, bg="#384b7a", width=600, height=300)
-        self.actuel_frame.grid(pady=100, padx=80)
-        self.actuel_frame.grid_propagate(False)
-        # titre des parametres 
-        self.titre=tk.Label(self.actuel_frame, text="Paramètres du jeu",font=("Arial", 24), bg="#384b7a",pady=20)
-        self.titre.grid ( row=0, column=1, columnspan=2)
+        # Titre
+        tk.Label(self.GUI_frame_settings, text="Paramètres du jeu",
+                font=("Arial", 24), bg="#384b7a", fg="white").pack(pady=20)
 
         # Nom du joueur
-        tk.Label(self.parametre, )
+        tk.Label(self.GUI_frame_settings, text="Nom du Joueur:",
+                font=("Arial", 14), bg="#384b7a", fg="white").pack(pady=5)
+        player_name_var = tk.StringVar(value="Joueur 1")
+        tk.Entry(self.GUI_frame_settings, textvariable=player_name_var,
+                font=("Arial", 12), bg="#ffffff", width=20).pack(pady=5)
 
-         # les boutons : 
-         # Première ligne pour la taille de la grille
-        self.taille_var = tk.StringVar()
-        self.taille_label = tk.Label(self.actuel_frame, text="Taille de la grille:" , bg="#384b7a")
-        self.taille_label.grid(row=1, column=0, padx=10, sticky="w")
-        self.radio_3x3 = tk.Radiobutton(self.actuel_frame, text="3x3", value="3x3",bg="#384b7a", variable=self.taille_var)
-        self.radio_4x4 = tk.Radiobutton(self.actuel_frame, text="4x4", value="4x4", bg="#384b7a",variable=self.taille_var)
-        self.radio_5x5 = tk.Radiobutton(self.actuel_frame, text="5x5", value="5x5",bg="#384b7a",variable=self.taille_var)
-        self.radio_3x3.grid(row=1, column=1, sticky="w")
-        self.radio_4x4.grid(row=1, column=2, sticky="w")
-        self.radio_5x5.grid(row=1, column=3, sticky="w")
+        # Taille de la grille
+        tk.Label(self.GUI_frame_settings, text="Taille de la grille:",
+                font=("Arial", 14), bg="#384b7a", fg="white").pack(pady=5)
+        grid_size_var = tk.IntVar(value=self.GUI_grid_size)
+        tk.Radiobutton(self.GUI_frame_settings, text="3x3", variable=grid_size_var, value=3,
+                    font=("Arial", 12), bg="#384b7a", fg="white").pack()
+        tk.Radiobutton(self.GUI_frame_settings, text="4x4", variable=grid_size_var, value=4,
+                    font=("Arial", 12), bg="#384b7a", fg="white").pack()
+        tk.Radiobutton(self.GUI_frame_settings, text="5x5", variable=grid_size_var, value=5,
+                    font=("Arial", 12), bg="#384b7a", fg="white").pack()
 
-        # Deuxième ligne pour "cocher des cases"
-        self.cocher_var = tk.BooleanVar()
-        self.cocher_label = tk.Label(self.actuel_frame, text="Cocher des cases",bg="#384b7a")
-        self.cocher_label.grid(row=2, column=0, padx=10, sticky="w")
-        self.radio_oui = tk.Radiobutton(self.actuel_frame, text="Oui",value=True, variable=self.cocher_var,bg="#384b7a")
-        self.radio_non = tk.Radiobutton(self.actuel_frame, text="Non",value=False, variable=self.cocher_var,bg="#384b7a")
-        self.radio_oui.grid(row=2, column=1, sticky="w")
-        self.radio_non.grid(row=2, column=2, sticky="w")
+        # Cocher des cases
+        tk.Label(self.GUI_frame_settings, text="Cocher des cases:",
+                font=("Arial", 14), bg="#384b7a", fg="white").pack(pady=5)
+        checkbox_frame = tk.Frame(self.GUI_frame_settings, bg="#384b7a")
+        checkbox_frame.pack(pady=5)
+        checkbox_var = tk.BooleanVar(value=False)
+        tk.Radiobutton(checkbox_frame, text="Oui", variable=checkbox_var, value=True,
+                    font=("Arial", 12), bg="#384b7a", fg="white").pack(side="left", padx=10)
+        tk.Radiobutton(checkbox_frame, text="Non", variable=checkbox_var, value=False,
+                    font=("Arial", 12), bg="#384b7a", fg="white").pack(side="left", padx=10)
 
-        # Troisième ligne pour le nombre de cases à cocher
-        self.nb_cases_label = tk.Label(self.actuel_frame, text="Nombre de cases à cocher:", bg="#384b7a" )
-        self.nb_cases_label.grid(row=3, column=0, padx=10, sticky="w")
-        self.nb_case_frame = tk.Entry(self.actuel_frame)
-        self.nb_case_frame.grid(row=3, column=1, pady=5)
+        # Couleur choisie (liste déroulante)
+        tk.Label(self.GUI_frame_settings, text="Choisir la couleur du joueur :",
+                font=("Arial", 14), bg="#384b7a", fg="white").pack(pady=5)
+        color_var = tk.StringVar(value="Rouge")
+        color_options = ["Bleu", "Vert", "Jaune", "Orange"]
+        color_dropdown = tk.OptionMenu(self.GUI_frame_settings, color_var, *color_options)
+        color_dropdown.config(font=("Arial", 12), bg="#384b7a", fg="white", width=15)
+        color_dropdown.pack(pady=5)
 
-        # Quatrième ligne pour la couleur choisi
-        self.couleur_var = tk.BooleanVar()
-        self.couleur_label = tk.Label(self.actuel_frame, text="Symbole choisi", bg="#384b7a")
-        self.couleur_label.grid(row=4, column=0, padx=10, sticky="w")
-        self.couleur_red = tk.Radiobutton(self.actuel_frame, text="Rouge", value=True, variable=self.couleur_var,bg="#384b7a")
-        self.couleur_blue = tk.Radiobutton(self.actuel_frame, text="Bleu", value=False,variable=self.couleur_var,bg="#384b7a")
-        self.couleur_red.grid(row=4, column=1, sticky="w")
-        self.couleur_blue.grid(row=4, column=2, sticky="w")
-
-        # Bouton de soumission
-        self.soumettre_bouton = tk.Button(self.actuel_frame, text="Valider", command=self.montrer_jeu,bg="#7683e7", fg="white", font=("Arial", 10), relief="solid", borderwidth=2, width=15, height=2)
-        self.soumettre_bouton.grid(row=5, column=0, columnspan=3, pady=20)
-    
-    def montrer_jeu(self):
-        # Détruire le précédent frame s'il existe
-        if self.actuel_frame is not None: 
-            self.actuel_frame.destroy()
-
-        # Créer un nouveau frame pour le jeu
-        self.actuel_frame = tk.Frame(self.fenetre, bg="#a1b8dc")
-        self.actuel_frame.grid(row=0, column=0, sticky="nsew")
-    
-        # Configurer la taille de la fenêtre pour qu'elle prenne toute la place
-        self.fenetre.grid_rowconfigure(0, weight=1)
-        self.fenetre.grid_columnconfigure(0, weight=1)
-
-        # frame qui va servir de menu 
-        self.menu_frame = tk.Frame(self.actuel_frame,bg="#a1b8cc")
-        self.menu_frame.grid(row=0, column=0, columnspan=3, sticky="ew")
-    
-        self.bouton1 = tk.Button(self.menu_frame,fg="white",text="Arreter la partie", command=self.montrer_acceuil, relief="solid",bg="#384b7a", font=("Arial", 12, "bold"),width=15, height=2)
-        self.bouton1.grid(row=1, column=0, padx=10, pady=10)
-
-        self.bouton2 = tk.Button(self.menu_frame, text="Undo", fg="white", relief="solid", font=("Arial", 12, "bold"),width=15, bg="#384b7a",height=2)
-        self.bouton2.grid(row=1, column=1, padx=10, pady=10)
-
-        self.bouton3 = tk.Button(self.menu_frame, text="Vider la grille",bg="#384b7a", command=self.montrer_jeu, fg="white", relief="solid",font=("Arial", 12, "bold"), width=15, height=2)
-        self.bouton3.grid(row=1, column=2, padx=10, pady=10)
-
-        # Frame contenant les joueurs à droite
-        self.joueurs_frame = tk.Frame(self.actuel_frame, bg="#f0f0f0", width=200, height=300)
-        self.joueurs_frame.grid(row=1, column=5, padx= 10,pady=40)
-        self.joueurs_frame.grid_propagate(False)
-    
-        # Titre de la frame des joueurs
-        self.titre_joueurs_frame = tk.Label(self.joueurs_frame, text="A qui le tour",font=("Arial", 12, "bold"),padx=30)
-        self.titre_joueurs_frame.grid(row=0, column=0, columnspan=2, pady=10, sticky="e")
-
-        # Boutons pour joueur et IA
-        self.joueur1 = tk.Button(self.joueurs_frame, text="Joueur", bg="#a1b8cc",fg="white", relief="solid",font=("Arial", 12, "bold"), width=15, height=2, padx=13)
-        self.joueur1.grid(row=1, column=1, columnspan=2, pady=10)
-
-        self.joueurIA = tk.Button(self.joueurs_frame, text="Ordinateur", bg="#a1b8cc",fg="white", relief="solid",font=("Arial", 12, "bold"), width=15, height=2, padx=13)
-        self.joueurIA.grid(row=2, column=1, columnspan=2, pady=10)
-
-        # frame qui va contenir la grille du jeu : 
-        self.grille_frame=tk.Frame(self.actuel_frame,width=600, height=500)
-        self.grille_frame.grid(row=1, column=0, columnspan= 4)
-        self.grille_frame.grid_propagate(False)
-        taille = self.taille_var.get() 
-        if taille == "3x3":
-            taille_grille = 3
-        elif taille == "4x4":
-            taille_grille = 4
-        else : 
-            taille_grille = 5
-        # ajustement des repartition des cases selon la dimension
-        for i in range(taille_grille):
-            self.grille_frame.grid_columnconfigure(i, weight=1) 
-            self.grille_frame.grid_rowconfigure(i, weight=1)
-        # creation de la grille
-        for i in range(taille_grille):
-            for j in range(taille_grille):
-                bouton = tk.Button(self.grille_frame, text=f"({i},{j})", command=lambda x=i, y=j: print(f"Button {x},{y} clicked"))
-                bouton.grid(row=i, column=j, sticky="nsew", padx=0, pady=0)
-
-    def frame_play_by_default(self):
-        # Détruire le précédent frame s'il existe
-        if self.actuel_frame is not None: 
-            self.actuel_frame.destroy()
-
-        # Créer un nouveau frame pour le jeu
-        self.actuel_frame = tk.Frame(self.fenetre, bg="#a1b8dc")
-        self.actuel_frame.grid(row=0, column=0, sticky="nsew")
-    
-        # Configurer la taille de la fenêtre pour qu'elle prenne toute la place
-        self.fenetre.grid_rowconfigure(0, weight=1)
-        self.fenetre.grid_columnconfigure(0, weight=1)
-
-        # frame qui va servir de menu 
-        self.menu_frame = tk.Frame(self.actuel_frame,bg="#a1b8cc")
-        self.menu_frame.grid(row=0, column=0, columnspan=3, sticky="ew")
-    
-        self.bouton1 = tk.Button(self.menu_frame,fg="white",text="Arreter la partie", command=self.montrer_acceuil, relief="solid",bg="#384b7a", font=("Arial", 12, "bold"),width=15, height=2)
-        self.bouton1.grid(row=1, column=0, padx=10, pady=10)
-
-        self.bouton2 = tk.Button(self.menu_frame, text="Undo", fg="white", relief="solid", font=("Arial", 12, "bold"),width=15, bg="#384b7a",height=2)
-        self.bouton2.grid(row=1, column=1, padx=10, pady=10)
-
-        self.bouton3 = tk.Button(self.menu_frame, text="Vider la grille",bg="#384b7a", command=self.montrer_jeu, fg="white", relief="solid",font=("Arial", 12, "bold"), width=15, height=2)
-        self.bouton3.grid(row=1, column=2, padx=10, pady=10)
-
-        # Frame contenant les joueurs à droite
-        self.joueurs_frame = tk.Frame(self.actuel_frame, bg="#f0f0f0", width=200, height=300)
-        self.joueurs_frame.grid(row=1, column=5, padx= 10,pady=40)
-        self.joueurs_frame.grid_propagate(False)
-    
-        # Titre de la frame des joueurs
-        self.titre_joueurs_frame = tk.Label(self.joueurs_frame, text="A qui le tour",font=("Arial", 12, "bold"),padx=30)
-        self.titre_joueurs_frame.grid(row=0, column=0, columnspan=2, pady=10, sticky="e")
-
-        # Boutons pour joueur et IA
-        self.joueur1 = tk.Button(self.joueurs_frame, text="Joueur", bg="#a1b8cc",fg="white", relief="solid",font=("Arial", 12, "bold"), width=15, height=2, padx=13)
-        self.joueur1.grid(row=1, column=1, columnspan=2, pady=10)
-
-        self.joueurIA = tk.Button(self.joueurs_frame, text="Ordinateur", bg="#a1b8cc",fg="white", relief="solid",font=("Arial", 12, "bold"), width=15, height=2, padx=13)
-        self.joueurIA.grid(row=2, column=1, columnspan=2, pady=10)
-
-        # frame qui va contenir la grille du jeu : 
-        self.grille_frame=tk.Frame(self.actuel_frame,width=600, height=500)
-        self.grille_frame.grid(row=1, column=0, columnspan= 4)
-        self.grille_frame.grid_propagate(False)
-        # ajustement des repartitions
-        for i in range(3):
-            self.grille_frame.grid_columnconfigure(i, weight=1) 
-            self.grille_frame.grid_rowconfigure(i, weight=1)
-        # creation de la grille 3*3
-        for i in range(3):
-            for j in range(3):
-                bouton = tk.Button(self.grille_frame, text=f"({i},{j})", command=lambda x=i, y=j: print(f"Button {x},{y} clicked"))
-                bouton.grid(row=i, column=j, sticky="nsew",padx=0, pady=0)
+        # Boutons de navigation
+        tk.Button(self.GUI_frame_settings, text="Jouer",
+                command=lambda: self.GUI_apply_settings(player_name_var.get(),
+                                                        grid_size_var.get(),
+                                                        checkbox_var.get(),
+                                                        color_var.get()),
+                font=("Arial", 14), bg="#7683e7", fg="white", width=15, height=2).pack(pady=10)
 
 
+    def GUI_apply_settings(self, player_name, grid_size, checkbox, color):
+        """Applique les paramètres et démarre le jeu."""
+        # Conversion du nom de couleur en TColor
+        color_mapping = {
+            "Rouge": TColor.ROUGE,
+            "Bleu": TColor.BLEU,
+            "Vert": TColor.VERT,
+            "Jaune": TColor.JAUNE,
+            "Orange": TColor.ORANGE
+        }
+        
+        # Mise à jour du joueur
+        self.GUI_game_logic.GLIset_players_name(player_name, "Ordinateur")
+        self.GUI_game_logic.oGLIPlayer1.PLRset_color(color_mapping[color])
+        
+        # Mise à jour de la grille
+        self.GUI_set_grid_size(grid_size)
+        self.GUI_display_frame(self.GUI_frame_game)
 
-         
+    def GUI_init_game_frame(self):
+        """Initialise la page de jeu."""
+        self.GUI_frame_game.configure(bg="#a1b8dc")
 
+        # Menu supérieur
+        menu_frame = tk.Frame(self.GUI_frame_game, bg="#a1b8cc")
+        menu_frame.pack(fill="x", pady=10)
 
-        """self.joueur1=tk.Button(self.joueurs_frame,text=self.PLRget_name())
-        self.joueur1.grid(row=1, column=1 , columnspan=2)
-        self.joueurIA=tk.Button(self.joueurs_frame,text="Ordinateur")
-        self.joueur1.grid(row=2, column=1 , columnspan=2)
+        tk.Button(menu_frame, text="Arreter la partie", command=lambda: self.GUI_display_frame(self.GUI_frame_home),
+                  font=("Arial", 12), bg="#384b7a", fg="white", width=15, height=2).pack(side="left", padx=10)
+        tk.Button(menu_frame, text="Undo", font=("Arial", 12), bg="#384b7a", fg="white", width=15, height=2).pack(side="left", padx=10)
+        tk.Button(menu_frame, text="Vider la grille", command=self.GUI_reset_game,
+                  font=("Arial", 12), bg="#384b7a", fg="white", width=15, height=2).pack(side="left", padx=10)
 
-        #distinguer le joueur actuel 
-        self.highlight_current_player()
-"""
-    """def highlight_current_player(self):
-         current_player = self.GLIGameLogic.GLIget_current_player()
-        if  current_player.PLRget_name()=="Ordinateur"
-            self.joueur1.config(bg="red", relief="sunken")
-            self.joueurIA.config(bg="white", relief="raised")
-        else :
-            self.joueurIA.config(bg="red", relief="sunken")
-            self.joueur1.config(bg="white", relief="raised")
-       """ 
-    #lancer la fenetre 
-    def lancer(self):
-        self.fenetre.mainloop()
+        # Cadre pour les joueurs
+        joueurs_frame = tk.Frame(self.GUI_frame_game, bg="#f0f0f0", width=200, height=300)
+        joueurs_frame.pack(side="right", padx=10, pady=40, fill="y")
+        joueurs_frame.pack_propagate(False)
 
+        tk.Label(joueurs_frame, text="A qui le tour", font=("Arial", 12, "bold"), bg="#f0f0f0").pack(pady=10)
+
+        tk.Button(joueurs_frame, text="Joueur", bg="#a1b8cc", fg="white", font=("Arial", 12, "bold"), width=15, height=2).pack(pady=10)
+        tk.Button(joueurs_frame, text="Ordinateur", bg="#a1b8cc", fg="white", font=("Arial", 12, "bold"), width=15, height=2).pack(pady=10)
+
+        # Grille de jeu
+        self.GUI_grid_frame = tk.Frame(self.GUI_frame_game, bg="#a1b8dc")
+        self.GUI_grid_frame.pack(expand=True)
+
+        self.GUI_create_grid()
+
+    def GUI_create_grid(self):
+        """Crée une grille de boutons."""
+        for widget in self.GUI_grid_frame.winfo_children():
+            widget.destroy()
+
+        self.GUI_grid_buttons = []
+        for i in range(self.GUI_grid_size):
+            row = []
+            for j in range(self.GUI_grid_size):
+                btn = tk.Button(self.GUI_grid_frame, text="", font=("Arial", 20),
+                                width=5, height=2,
+                                command=lambda iRow=i, iCol=j: self.GUI_make_move(iRow, iCol))
+                btn.grid(row=i, column=j, padx=5, pady=5)
+                row.append(btn)
+            self.GUI_grid_buttons.append(row)
+
+    def GUI_make_move(self, row, col):
+        """Gère un mouvement dans la grille"""
+        current_player = self.GUI_game_logic.GLIget_current_player()
+        
+        if not current_player.bPLRIsAI:
+            # Si c'est le joueur humain qui joue
+            current_player.PLRjouer(self.GUI_game_logic, row, col)
+            self.GUI_update_button(row, col)
+            
+            # Vérification de l'état du jeu
+            if self.GUI_check_game_state():
+                return
+
+            # Tour de l'IA
+            ai_player = self.GUI_game_logic.GLIget_current_player()
+            if ai_player.bPLRIsAI:
+                ai_player.PLRjouer(self.GUI_game_logic)
+                # Trouver le dernier coup joué par l'IA
+                last_move = self.GUI_game_logic.move_history[-1]
+                self.GUI_update_button(last_move[0], last_move[1])
+                self.GUI_check_game_state()
+
+    def GUI_check_game_state(self):
+        """Vérifie l'état du jeu et retourne True si la partie est terminée"""
+        current_player = self.GUI_game_logic.GLIget_current_player()
+        winner = self.GUI_game_logic.GLIcheck_winner(current_player.PLRget_color())
+        
+        if winner:
+            messagebox.showinfo("Fin de la partie", f"{winner.PLRget_name()} a gagné!")
+            self.GUI_reset_game()
+            return True
+        elif self.GUI_game_logic.GLIcheck_draw(current_player.PLRget_color()):
+            messagebox.showinfo("Fin de la partie", "Match nul!")
+            self.GUI_reset_game()
+            return True
+        return False
+
+    def GUI_update_button(self, row, col):
+        """Met à jour l'apparence d'un bouton après un coup"""
+        button = self.GUI_grid_buttons[row][col]
+        color_enum = self.GUI_game_logic.tGLIgrid[row][col]
+        
+        # Utilisation directe de la couleur Tkinter depuis TColor
+        canvas = tk.Canvas(button, 
+                          width=50, 
+                          height=50,
+                          bg="white",
+                          highlightthickness=0)
+        canvas.place(relx=0.5, rely=0.5, anchor="center", relwidth=1, relheight=1)
+        canvas.create_oval(5, 5, 45, 45, fill=color_enum.tkinter_color)
+        button.config(state="disabled")
+
+    def GUI_reset_game(self):
+        """Réinitialise la grille et le jeu."""
+        self.GUI_game_logic.GLIreset_game()
+        self.GUI_create_grid()
+
+    def GUI_set_grid_size(self, iNewSize):
+        """Définit la taille de la grille."""
+        self.GUI_grid_size = iNewSize
+        self.GUI_game_logic.GLIresize_grid(iNewSize)
+        self.GUI_create_grid()
+        self.GUI_display_frame(self.GUI_frame_game)
+
+    def GUI_run(self):
+        """Lance l'application"""
+        self.GUI_fenetre.mainloop()
+
+    def GUI_update_current_player(self):
+        """Met à jour l'affichage du joueur actuel"""
+        current_player = self.GUI_game_logic.GLIget_current_player()
+        if hasattr(self, 'GUI_current_player_label'):
+            self.GUI_current_player_label.config(
+                text=f"C'est au tour de {current_player.PLRget_name()}")
