@@ -79,6 +79,9 @@ class GameLogic:
         @param iCol: Index de la colonne
         @return: True si le mouvement est valide, False sinon
         """
+        if oPlayer is None:
+            raise ValueError("Le joueur est None. Assurez-vous que les joueurs sont initialisés.")
+
         oColor = oPlayer.PLRget_color()
 
         if 0 <= iRow < self.iGLIsize \
@@ -129,7 +132,7 @@ class GameLogic:
         """
         if iNewSize >= 3 or iNewSize <= 7:
             self.iGLIsize = iNewSize
-            self.tGLIgrid = self.GLIinitialize_grid()
+            self.iGLIwinning_condition = iNewSize - 1
         else:
             print("La taille de la grille doit être comprise entre 3 et 7.")
 
@@ -242,7 +245,9 @@ class GameLogic:
         """
         if self.oGLIPlayer1.PLRget_color() == oColor:
             return self.oGLIPlayer1
-        return self.oGLIPlayer2
+        elif self.oGLIPlayer2.PLRget_color() == oColor:
+            return self.oGLIPlayer2
+        return None
     
     def GLIreset_game(self):
         """
