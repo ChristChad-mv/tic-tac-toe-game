@@ -15,7 +15,7 @@ class TicTacToeGUI:
 
         # Logique de jeu
         self.GUI_game_logic = game_logic
-        self.GUI_grid_size = 3
+        self.GUI_grid_size = self.GUI_game_logic.iGLISize
 
         # Frames
         self.GUI_current_frame = None
@@ -38,6 +38,9 @@ class TicTacToeGUI:
         frame.pack(fill="both", expand=True)
         self.GUI_current_frame = frame
 
+    """
+    -------------------- HOME FRAME --------------------
+    """
     def GUI_init_home_frame(self):
         """Initialise la page d'accueil."""
 
@@ -57,6 +60,9 @@ class TicTacToeGUI:
                   command=self.GUI_fenetre.quit,
                   font=("Arial", 14), bg="red", fg="white", width=20, height=2).pack(pady=10)
 
+    """
+    -------------------- SETTINGS FRAME --------------------
+    """
     def GUI_init_settings_frame(self):
         """Initialise la page des paramètres."""
         self.GUI_frame_settings.configure(bg="#384b7a")
@@ -125,11 +131,18 @@ class TicTacToeGUI:
 
         self.GUI_game_logic.GLIset_players_name(player_name, "Ordinateur")
         self.GUI_game_logic.oGLIPlayer1.PLRset_color(color_mapping[color])
-        
+        self.GUI_game_logic.GLIset_grid_size(grid_size)
+        self.GUI_game_logic.GLIset_winning_condition()
         # Mise à jour de la grille
         self.GUI_set_grid_size(grid_size)
+        self.GUI_game_logic.GLIresize_grid(grid_size)
+        self.GUI_create_grid(grid_size)
         self.GUI_display_frame(self.GUI_frame_game)
 
+
+    """
+    -------------------- GAME FRAME --------------------
+    """
     def GUI_init_game_frame(self):
         """Initialise la page de jeu."""
         self.GUI_frame_game.configure(bg="#a1b8dc")
@@ -143,6 +156,11 @@ class TicTacToeGUI:
         tk.Button(menu_frame, text="Undo", font=("Arial", 12), bg="#384b7a", fg="white", width=15, height=2).pack(side="left", padx=10)
         tk.Button(menu_frame, text="Vider la grille", command=self.GUI_reset_game,
                   font=("Arial", 12), bg="#384b7a", fg="white", width=15, height=2).pack(side="left", padx=10)
+        
+        # Label pour afficher le niveau
+        self.GUI_level_label = tk.Label(menu_frame, text=f"Niveau : {self.GUI_game_logic.difficulty_level}",
+                                        font=("Arial", 14), bg="#a1b8cc", fg="white")
+        self.GUI_level_label.pack(side="right", padx=10)
         """
         # Cadre pour les joueurs
         joueurs_frame = tk.Frame(self.GUI_frame_game, bg="#f0f0f0", width=200, height=300)
@@ -158,9 +176,9 @@ class TicTacToeGUI:
         self.GUI_grid_frame = tk.Frame(self.GUI_frame_game, bg="#a1b8dc")
         self.GUI_grid_frame.pack(expand=True)
 
-        self.GUI_create_grid(3)
+        self.GUI_create_grid(self.GUI_grid_size)
 
-    def GUI_create_grid(self, iNewSize):
+    def GUI_create_grid(self, iNewSize: int):
         """Crée une grille de boutons."""
         for widget in self.GUI_grid_frame.winfo_children():
             widget.destroy()
@@ -183,36 +201,49 @@ class TicTacToeGUI:
         if not current_player.bPLRIsAI:
             # Si c'est le joueur humain qui joue
             current_player.PLRjouer(self.GUI_game_logic, row, col)
-            print(f"{row}, {col}")
             self.GUI_update_button(row, col)
             
-            # Vérification de l'état du jeu
+            # Vérification immédiate de l'état après le coup humain
             if self.GUI_check_game_state():
-                return
+                return  # Arrête si la partie est terminée
 
             # Tour de l'IA
             ai_player = self.GUI_game_logic.GLIget_current_player()
             if ai_player.bPLRIsAI:
                 ai_player.PLRjouer(self.GUI_game_logic)
-                # Trouver le dernier coup joué par l'IA
                 last_move = self.GUI_game_logic.move_history[-1]
                 self.GUI_update_button(last_move[0], last_move[1])
                 self.GUI_check_game_state()
 
+                if self.GUI_check_game_state():
+                    return  # Arrête si la partie est terminée
+                   
     def GUI_check_game_state(self):
-        """Vérifie l'état du jeu et retourne True si la partie est terminée"""
-        current_player = self.GUI_game_logic.GLIget_current_player()
-        winner = self.GUI_game_logic.GLIcheck_winner(current_player.PLRget_color())
-        
-        if winner:
-            messagebox.showinfo("Fin de la partie", f"{winner.PLRget_name()} a gagné!")
-            self.GUI_reset_game()
+        """Vérifie l'état du jeu et retourne True si la partie est terminée."""
+        human_winner = self.GUI_game_logic.GLIcheck_winner(self.GUI_game_logic.oGLIPlayer1.PLRget_color())
+        if human_winner:
+            messagebox.showinfo("Fin de la partie", f"{human_winner.PLRget_name()} a gagné!")
+            self.GUI_game_logic.GLIincrement_difficulty()  # Augmenter le niveau
+            self.GUI_level_label.config(text=f"Niveau : {self.GUI_game_logic.difficulty_level}")
+            self.GUI_reset_game()  # Réinitialiser la grille uniquement
             return True
-        elif self.GUI_game_logic.GLIcheck_draw(current_player.PLRget_color()):
+
+        ai_winner = self.GUI_game_logic.GLIcheck_winner(self.GUI_game_logic.oGLIPlayer2.PLRget_color())
+        if ai_winner:
+            messagebox.showinfo("Fin de la partie", f"{ai_winner.PLRget_name()} a gagné!")
+            self.GUI_game_logic.GLIreset_difficulty()  # Réinitialiser le niveau de difficulté
+            self.GUI_level_label.config(text=f"Niveau : {self.GUI_game_logic.difficulty_level}")
+            self.GUI_reset_game()  # Réinitialiser la grille uniquement
+            return True
+
+        if self.GUI_game_logic.GLIcheck_draw(None):
             messagebox.showinfo("Fin de la partie", "Match nul!")
-            self.GUI_reset_game()
+            self.GUI_reset_game()  # Réinitialiser la grille uniquement
             return True
+
         return False
+
+
 
     def GUI_update_button(self, row, col):
         """Met à jour l'apparence d'un bouton après un coup"""
@@ -232,14 +263,13 @@ class TicTacToeGUI:
     def GUI_reset_game(self):
         """Réinitialise la grille et le jeu."""
         self.GUI_game_logic.GLIreset_game()
-        self.GUI_create_grid()
+        self.GUI_level_label.config(text=f"Niveau : {self.GUI_game_logic.difficulty_level}")
+        self.GUI_create_grid(self.GUI_grid_size)
 
     def GUI_set_grid_size(self, iNewSize):
         """Définit la taille de la grille."""
         self.GUI_grid_size = iNewSize
-        self.GUI_game_logic.GLIresize_grid(iNewSize)
-        self.GUI_create_grid(iNewSize)
-        self.GUI_display_frame(self.GUI_frame_game)
+        
 
     def GUI_run(self):
         """Lance l'application"""
