@@ -32,8 +32,8 @@ class TPlayerIA(TPlayer):
         @return : Liste des coordonnées des cases disponibles
         """
         moves = []
-        for row in range(game.iGLIsize):
-            for col in range(game.iGLIsize):
+        for row in range(game.iGLISize):
+            for col in range(game.iGLISize):
                 if game.tGLIgrid[row][col] == TColor.VIDE:
                     moves.append((row, col))
         return moves
@@ -100,7 +100,10 @@ class TPlayerIA(TPlayer):
         L'IA utilise Minimax pour choisir la meilleure option disponible.
         @param game : Instance actuelle du jeu (GameLogic)
         """
-        _, best_move = self.PLRminimax(game, iGMdepth=3, bPLRisMaximizing=True) 
+        """L'IA joue en utilisant Minimax avec la profondeur ajustée au niveau."""
+        iGMdepth = game.GLIget_difficulty()
+        print(f"L'IA joue avec une profondeur de {iGMdepth }.")
+        _, best_move = self.PLRminimax(game, iGMdepth=iGMdepth , bPLRisMaximizing=True)
+        
         if best_move:
-            row, col = best_move
-            game.GLImake_move(self, row, col)
+            game.GLImake_move(self, best_move[0], best_move[1])
