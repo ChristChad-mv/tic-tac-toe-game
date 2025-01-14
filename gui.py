@@ -103,8 +103,8 @@ class TicTacToeGUI:
         # Couleur choisie (liste déroulante)
         tk.Label(self.GUI_frame_settings, text="Choisir la couleur du joueur :",
                 font=("Arial", 14), bg="#384b7a", fg="white").pack(pady=5)
-        color_var = tk.StringVar(value="Rouge")
-        color_options = ["Bleu", "Vert", "Jaune", "Orange"]
+        color_var = tk.StringVar(value="Bleu")
+        color_options = ["Vert", "Jaune", "Orange"]
         color_dropdown = tk.OptionMenu(self.GUI_frame_settings, color_var, *color_options)
         color_dropdown.config(font=("Arial", 12), bg="#384b7a", fg="white", width=15)
         color_dropdown.pack(pady=5)
@@ -250,15 +250,37 @@ class TicTacToeGUI:
         button = self.GUI_grid_buttons[row][col]
         color_enum = self.GUI_game_logic.tGLIgrid[row][col]
         
-        # Utilisation directe de la couleur Tkinter depuis TColor
-        canvas = tk.Canvas(button, 
-                          width=50, 
-                          height=50,
-                          bg="white",
-                          highlightthickness=0)
+        # Détruire tout contenu précédent du bouton pour éviter les doublons
+        for widget in button.winfo_children():
+            widget.destroy()
+
+        # Dimensions dynamiques pour adapter la taille de l'élément au bouton
+        canvas_width = button.winfo_width()
+        canvas_height = button.winfo_height()
+        oval_diameter = min(canvas_width, canvas_height) - 20  # Marge de 10px
+
+        # Création du canvas pour dessiner un ovale coloré
+        canvas = tk.Canvas(
+            button,
+            width=canvas_width,
+            height=canvas_height,
+            bg=button.cget("bg"),  # Utilise la couleur d'arrière-plan du bouton
+            highlightthickness=0
+        )
         canvas.place(relx=0.5, rely=0.5, anchor="center", relwidth=1, relheight=1)
-        canvas.create_oval(5, 5, 45, 45, fill=color_enum.tkinter_color)
+
+        # Dessiner l'ovale au centre du canvas
+        canvas.create_oval(
+            (canvas_width - oval_diameter) / 2,
+            (canvas_height - oval_diameter) / 2,
+            (canvas_width + oval_diameter) / 2,
+            (canvas_height + oval_diameter) / 2,
+            fill=color_enum.tkinter_color
+        )
+
+        # Désactiver le bouton après la mise à jour
         button.config(state="disabled")
+
 
     def GUI_reset_game(self):
         """Réinitialise la grille et le jeu."""
