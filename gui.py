@@ -4,13 +4,14 @@ from PIL import Image, ImageTk
 from game_logic import GameLogic
 from Player.player import TPlayer
 from Player.color import TColor
+import random
 
 class TicTacToeGUI:
     def __init__(self, game_logic):
         # Initialisation de la fenêtre principale
         self.GUI_fenetre = tk.Tk()
         self.GUI_fenetre.title("TIC-TAC-TOE")
-        self.GUI_fenetre.geometry("800x600")
+        self.GUI_fenetre.geometry("800x800")
         self.GUI_fenetre.resizable(width=False, height=False)
 
         # Logique de jeu
@@ -45,18 +46,29 @@ class TicTacToeGUI:
         """Initialise la page d'accueil."""
 
         self.GUI_frame_home.configure(bg="#29417d")
-        tk.Label(self.GUI_frame_home, text="Bienvenue à Tic Tac Toe!",
+        # Charger et afficher l'image de fond
+        self.bg_image = Image.open("picture.jpg")  
+        self.bg_image = self.bg_image.resize((800, 800),Image.Resampling.LANCZOS)
+        self.bg_photo = ImageTk.PhotoImage(self.bg_image)
+
+        # Ajouter l'image en arrière-plan
+        self.bg_label = tk.Label(self.GUI_frame_home, image=self.bg_photo)
+        self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)  
+        # frame contenant les boutons 
+        button_frame = tk.Frame(self.GUI_frame_home, bg="#29417d")
+        button_frame.place(relx=0.5, rely=0.3, anchor="center")  
+        tk.Label(button_frame, text="Bienvenue à Tic Tac Toe!",
                  font=("Arial", 24), bg="#29417d", fg="white").pack(pady=20)
 
-        tk.Button(self.GUI_frame_home, text="Jouer",
+        tk.Button(button_frame, text="Jouer",
                   command=lambda: self.GUI_display_frame(self.GUI_frame_game),
                   font=("Arial", 14), bg="#7683e7", fg="white", width=20, height=2).pack(pady=10)
 
-        tk.Button(self.GUI_frame_home, text="Paramètres",
+        tk.Button(button_frame, text="Paramètres",
                   command=lambda: self.GUI_display_frame(self.GUI_frame_settings),
                   font=("Arial", 14), bg="#7683e7", fg="white", width=20, height=2).pack(pady=10)
 
-        tk.Button(self.GUI_frame_home, text="Quitter",
+        tk.Button(button_frame, text="Quitter",
                   command=self.GUI_fenetre.quit,
                   font=("Arial", 14), bg="red", fg="white", width=20, height=2).pack(pady=10)
 
@@ -81,13 +93,12 @@ class TicTacToeGUI:
         # Taille de la grille
         tk.Label(self.GUI_frame_settings, text="Taille de la grille:",
                 font=("Arial", 14), bg="#384b7a", fg="white").pack(pady=5)
+         
         grid_size_var = tk.IntVar(value=self.GUI_grid_size)
-        tk.Radiobutton(self.GUI_frame_settings, text="3x3", variable=grid_size_var, value=3,
-                    font=("Arial", 12), bg="#384b7a", fg="white").pack()
-        tk.Radiobutton(self.GUI_frame_settings, text="5x5", variable=grid_size_var, value=5,
-                    font=("Arial", 12), bg="#384b7a", fg="white").pack()
-        tk.Radiobutton(self.GUI_frame_settings, text="7x7", variable=grid_size_var, value=7,
-                    font=("Arial", 12), bg="#384b7a", fg="white").pack()
+        size_options = [3, 5, 7]
+        size_dropdown = tk.OptionMenu(self.GUI_frame_settings, grid_size_var, *size_options)
+        size_dropdown.config(font=("Arial", 12), bg="#384b7a", fg="white", width=15)
+        size_dropdown.pack(pady=5)
 
         # Cocher des cases
         tk.Label(self.GUI_frame_settings, text="Cocher des cases:",
@@ -95,11 +106,21 @@ class TicTacToeGUI:
         checkbox_frame = tk.Frame(self.GUI_frame_settings, bg="#384b7a")
         checkbox_frame.pack(pady=5)
         checkbox_var = tk.BooleanVar(value=False)
+        self.GUI_frame_settings.checkbox_var = checkbox_var
         tk.Radiobutton(checkbox_frame, text="Oui", variable=checkbox_var, value=True,
                     font=("Arial", 12), bg="#384b7a", fg="white").pack(side="left", padx=10)
         tk.Radiobutton(checkbox_frame, text="Non", variable=checkbox_var, value=False,
                     font=("Arial", 12), bg="#384b7a", fg="white").pack(side="left", padx=10)
-
+        # type de cochage random ou pyramide
+        tk.Label(self.GUI_frame_settings, text="Type de cochage:",
+                font=("Arial", 14), bg="#384b7a", fg="white").pack(pady=5)
+        choicebox_frame = tk.Frame(self.GUI_frame_settings, bg="#384b7a")
+        choicebox_frame.pack(pady=5)
+        choicebox_var = tk.BooleanVar(value=False)
+        tk.Radiobutton(choicebox_frame, text="Random", variable=choicebox_var, value=True,
+                    font=("Arial", 12), bg="#384b7a", fg="white").pack(side="left", padx=10)
+        tk.Radiobutton(choicebox_frame, text="Pyramid", variable=choicebox_var, value=False,
+                    font=("Arial", 12), bg="#384b7a", fg="white").pack(side="left", padx=10)
         # Couleur choisie (liste déroulante)
         tk.Label(self.GUI_frame_settings, text="Choisir la couleur du joueur :",
                 font=("Arial", 14), bg="#384b7a", fg="white").pack(pady=5)
@@ -139,6 +160,15 @@ class TicTacToeGUI:
         self.GUI_create_grid(grid_size)
         self.GUI_display_frame(self.GUI_frame_game)
 
+        if checkbox:
+        # Appeler la fonction pour griser les cases en pyramide ou aléatoirement
+            if self.GUI_frame_settings.checkbox_var.get():   
+                self.GUI_check_boxes_pyramid(grid_size)
+            else:  
+                self.GUI_check_boxes_random(grid_size)
+    
+        self.GUI_display_frame(self.GUI_frame_game)
+
 
     """
     -------------------- GAME FRAME --------------------
@@ -148,7 +178,7 @@ class TicTacToeGUI:
         self.GUI_frame_game.configure(bg="#a1b8dc")
 
         # Menu supérieur
-        menu_frame = tk.Frame(self.GUI_frame_game, bg="#a1b8cc")
+        menu_frame = tk.Frame(self.GUI_frame_game, bg="#a1b8dc")
         menu_frame.pack(fill="x", pady=10)
 
         tk.Button(menu_frame, text="Arreter la partie", command=lambda: self.GUI_display_frame(self.GUI_frame_home),
@@ -174,7 +204,7 @@ class TicTacToeGUI:
         """
         # Grille de jeu
         self.GUI_grid_frame = tk.Frame(self.GUI_frame_game, bg="#a1b8dc")
-        self.GUI_grid_frame.pack(expand=True)
+        self.GUI_grid_frame.pack(expand=False)
 
         self.GUI_create_grid(self.GUI_grid_size)
 
@@ -182,20 +212,27 @@ class TicTacToeGUI:
         """Crée une grille de boutons."""
         for widget in self.GUI_grid_frame.winfo_children():
             widget.destroy()
-
+        self.GUI_grid_buttons = []
+        for i in range(self.GUI_grid_size):
+            self.GUI_grid_frame.grid_rowconfigure(i, weight=1, minsize=80) 
+            self.GUI_grid_frame.grid_columnconfigure(i, weight=1, minsize=80)
         self.GUI_grid_buttons = []
         for i in range(iNewSize):
             row = []
             for j in range(iNewSize):
                 btn = tk.Button(self.GUI_grid_frame, text="", font=("Arial", 20),
-                                width=5, height=2,
                                 command=lambda iRow=i, iCol=j: self.GUI_make_move(iRow, iCol))
-                btn.grid(row=i, column=j, padx=0, pady=0)
+                btn.grid(row=i, column=j,sticky="nsew")
+                btn.is_grayed = False
                 row.append(btn)
             self.GUI_grid_buttons.append(row)
 
     def GUI_make_move(self, row, col):
         """Gère un mouvement dans la grille"""
+        if self.GUI_grid_buttons[row][col].is_grayed:
+            print("Cette case est grisée, vous ne pouvez pas y jouer.")  
+            return  
+        
         current_player = self.GUI_game_logic.GLIget_current_player()
         
         if not current_player.bPLRIsAI:
@@ -210,13 +247,19 @@ class TicTacToeGUI:
             # Tour de l'IA
             ai_player = self.GUI_game_logic.GLIget_current_player()
             if ai_player.bPLRIsAI:
-                ai_player.PLRjouer(self.GUI_game_logic)
-                last_move = self.GUI_game_logic.move_history[-1]
-                self.GUI_update_button(last_move[0], last_move[1])
-                self.GUI_check_game_state()
+                while True :
+                    ai_player.PLRjouer(self.GUI_game_logic)
+                    last_move = self.GUI_game_logic.move_history[-1]
+                    row,col=last_move[0], last_move[1]
+                    if self.GUI_grid_buttons[row][col].is_grayed:
+                        continue 
+
+                    self.GUI_update_button(last_move[0], last_move[1])
+                    self.GUI_check_game_state()
+                    break
 
                 if self.GUI_check_game_state():
-                    return  # Arrête si la partie est terminée
+                    return  
                    
     def GUI_check_game_state(self):
         """Vérifie l'état du jeu et retourne True si la partie est terminée."""
@@ -235,6 +278,14 @@ class TicTacToeGUI:
             self.GUI_level_label.config(text=f"Niveau : {self.GUI_game_logic.difficulty_level}")
             self.GUI_reset_game()  # Réinitialiser la grille uniquement
             return True
+        all_grayed_or_occupied = True
+        for row in range(self.GUI_grid_size):
+            for col in range(self.GUI_grid_size):
+                if not self.GUI_grid_buttons[row][col].is_grayed and not self.GUI_grid_buttons[row][col].cget("state") == "disabled":
+                    all_grayed_or_occupied = False
+                    break
+            if not all_grayed_or_occupied:
+                break
 
         if self.GUI_game_logic.GLIcheck_draw(None):
             messagebox.showinfo("Fin de la partie", "Match nul!")
@@ -303,3 +354,26 @@ class TicTacToeGUI:
         if hasattr(self, 'GUI_current_player_label'):
             self.GUI_current_player_label.config(
                 text=f"C'est au tour de {current_player.PLRget_name()}")
+    
+
+  
+
+    def GUI_check_boxes_pyramid(self, grid_size):
+        """Coche des cases en forme de pyramide."""
+        middle = grid_size // 2  # Trouver la case centrale
+        for i in range(grid_size):
+            for j in range(grid_size):
+                # Vérifier si (i,j) est dans un "rayon" de la pyramide
+                if abs(i - middle) + abs(j - middle) <= middle:
+                    self.GUI_grayscale_button(i, j)
+
+    def GUI_check_boxes_random(self, grid_size):
+        """Coche des cases aléatoirement."""
+        pass 
+        # pas encore fait 
+
+    def GUI_grayscale_button(self, row, col):
+        """Grise un bouton spécifique de la grille et le désactive."""
+        button = self.GUI_grid_buttons[row][col]
+        button.config(state="disabled", bg="grey")   
+        self.GUI_grid_buttons[row][col].is_grayed = True
