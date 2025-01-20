@@ -301,12 +301,21 @@ class GameLogic:
         self.bGLIIsPlayerOneTurn = True
 
     def GLIundo_move(self):
-        """
-        UN PEU PLUS COMPLIQUÉ À FAIRE : 
-        - considérer l'état
-        - 
-        """
-        pass
+        """ ici on implemente l'option de l'undo"""
+        if not self.move_history:
+            print("Aucun mouvement à annuler.")
+            return False
+
+        last_move = self.move_history.pop()
+        iRow, iCol, _ = last_move
+
+        # Réinitialise la case dans la grille
+        self.tGLIgrid[iRow][iCol] = TColor.VIDE
+
+        # Remet le tour au joueur qui a effectué le mouvement
+        self.bGLIIsPlayerOneTurn = not self.bGLIIsPlayerOneTurn
+
+        return True
     
     def GLIset_players_name(self, sPlayer1_name: str, sPlayer2_name: str): 
         """
