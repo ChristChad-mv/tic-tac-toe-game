@@ -47,8 +47,8 @@ class TicTacToeGUI:
 
         self.GUI_frame_home.configure(bg="#29417d")
         # Charger et afficher l'image de fond
-        self.bg_image = Image.open(r"C:\\Users\\MERABTENE\\Pictures\\Mvoungouversion\\tic-tac-toe-game\\picture.jpg")  
-        self.bg_image = self.bg_image.resize((800, 800),Image.Resampling.LANCZOS)
+        self.bg_image = Image.open("picture.jpg") 
+        self.bg_image = self.bg_image.resize((800, 800),Image.LANCZOS)
         self.bg_photo = ImageTk.PhotoImage(self.bg_image)
 
         # Ajouter l'image en arrière-plan
@@ -101,7 +101,7 @@ class TicTacToeGUI:
         size_dropdown.pack(pady=5)
 
         # Cocher des cases
-        tk.Label(self.GUI_frame_settings, text="Cocher des cases:",
+        tk.Label(self.GUI_frame_settings, text="Griser des cases ? :",
                 font=("Arial", 14), bg="#384b7a", fg="white").pack(pady=5)
         checkbox_frame = tk.Frame(self.GUI_frame_settings, bg="#384b7a")
         checkbox_frame.pack(pady=5)
@@ -112,7 +112,7 @@ class TicTacToeGUI:
         tk.Radiobutton(checkbox_frame, text="Non", variable=checkbox_var, value=False,
                     font=("Arial", 12), bg="#384b7a", fg="white").pack(side="left", padx=10)
         # type de cochage random ou pyramide
-        tk.Label(self.GUI_frame_settings, text="Type de cochage:",
+        tk.Label(self.GUI_frame_settings, text="Type de grisage :",
                 font=("Arial", 14), bg="#384b7a", fg="white").pack(pady=5)
         choicebox_frame = tk.Frame(self.GUI_frame_settings, bg="#384b7a")
         choicebox_frame.pack(pady=5)
@@ -122,7 +122,7 @@ class TicTacToeGUI:
         tk.Radiobutton(choicebox_frame, text="Pyramid", variable=choicebox_var, value="Pyramid",
                     font=("Arial", 12), bg="#384b7a", fg="white").pack(side="left", padx=10)
         # cases à cocher en random :
-        tk.Label(self.GUI_frame_settings, text="nombre de cases à cocher (random)",font=("Arial", 14), bg="#384b7a", fg="white").pack(pady=5)
+        tk.Label(self.GUI_frame_settings, text="nombre de cases à griser (random)",font=("Arial", 14), bg="#384b7a", fg="white").pack(pady=5)
         number_case_var = tk.IntVar()
         number_case_entry= tk.Entry(self.GUI_frame_settings, textvariable=number_case_var,
                 font=("Arial", 12), bg="#ffffff", width=10).pack(pady=5)
