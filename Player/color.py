@@ -7,6 +7,7 @@ class TColor(Enum):
     VERT = 3
     JAUNE = 4
     ORANGE = 5
+    GREY = 6
 
     @property
     def tkinter_color(self):
@@ -17,6 +18,7 @@ class TColor(Enum):
             TColor.BLEU: "blue",
             TColor.VERT: "green",
             TColor.JAUNE: "yellow",
-            TColor.ORANGE: "orange"
+            TColor.ORANGE: "orange",
+            TColor.GREY: "grey"
         }
         return color_mapping[self]
