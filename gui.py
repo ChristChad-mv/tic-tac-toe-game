@@ -108,9 +108,9 @@ class TicTacToeGUI:
         checkbox_var = tk.BooleanVar(value=False)
         self.GUI_frame_settings.checkbox_var = checkbox_var
         tk.Radiobutton(checkbox_frame, text="Oui", variable=checkbox_var, value=True,
-                    font=("Arial", 12), bg="#384b7a", fg="white").pack(side="left", padx=10)
+                    font=("Arial", 12), bg="#384b7a", selectcolor="lightgrey").pack(side="left", padx=10)
         tk.Radiobutton(checkbox_frame, text="Non", variable=checkbox_var, value=False,
-                    font=("Arial", 12), bg="#384b7a", fg="white").pack(side="left", padx=10)
+                    font=("Arial", 12), bg="#384b7a", selectcolor="lightgrey").pack(side="left", padx=10)
         # type de cochage random ou pyramide
         tk.Label(self.GUI_frame_settings, text="Type de grisage :",
                 font=("Arial", 14), bg="#384b7a", fg="white").pack(pady=5)
@@ -118,9 +118,9 @@ class TicTacToeGUI:
         choicebox_frame.pack(pady=5)
         choicebox_var = tk.StringVar()
         tk.Radiobutton(choicebox_frame, text="Random", variable=choicebox_var, value="Random",
-                    font=("Arial", 12), bg="#384b7a", fg="white").pack(side="left", padx=10)
+                    font=("Arial", 12), bg="#384b7a", selectcolor="lightgrey").pack(side="left", padx=10)
         tk.Radiobutton(choicebox_frame, text="Pyramid", variable=choicebox_var, value="Pyramid",
-                    font=("Arial", 12), bg="#384b7a", fg="white").pack(side="left", padx=10)
+                    font=("Arial", 12), bg="#384b7a", selectcolor="lightgrey").pack(side="left", padx=10)
         # cases à cocher en random :
         tk.Label(self.GUI_frame_settings, text="nombre de cases à griser (random)",font=("Arial", 14), bg="#384b7a", fg="white").pack(pady=5)
         number_case_var = tk.IntVar()
@@ -199,8 +199,11 @@ class TicTacToeGUI:
         menu_frame = tk.Frame(self.GUI_frame_game, bg="#a1b8dc")
         menu_frame.pack(fill="x", pady=10)
 
-        tk.Button(menu_frame, text="Arreter la partie", command=lambda: self.GUI_display_frame(self.GUI_frame_home),
-                  font=("Arial", 12), bg="#384b7a", fg="white", width=15, height=2).pack(side="left", padx=10)
+        tk.Button(menu_frame, text="Arreter la partie",
+          command=lambda: self.GUI_stop_game_and_go_home(),
+          font=("Arial", 12), bg="#384b7a", fg="white",
+          width=15, height=2).pack(side="left", padx=10)
+
         tk.Button(menu_frame, text="Undo", command= self.GUI_undo_move, font=("Arial", 12), bg="#384b7a", fg="white", width=15, height=2).pack(side="left", padx=10)
         tk.Button(menu_frame, text="Vider la grille", command=self.GUI_reset_game,
                   font=("Arial", 12), bg="#384b7a", fg="white", width=15, height=2).pack(side="left", padx=10)
@@ -241,20 +244,20 @@ class TicTacToeGUI:
             messagebox.showinfo("Fin de la partie", f"{ai_winner.PLRget_name()} a gagné!")
             self.GUI_game_logic.GLIreset_difficulty()  # Réinitialiser le niveau de difficulté
             self.GUI_level_label.config(text=f"Niveau : {self.GUI_game_logic.difficulty_level}")
-            self.GUI_reset_game()  # Réinitialiser la grille uniquement
+            self.GUI_stop_game_and_go_home()  # Réinitialiser la grille uniquement
             return True
-        all_grayed_or_occupied = True
-        for row in range(self.GUI_grid_size):
-            for col in range(self.GUI_grid_size):
-                if not self.GUI_grid_buttons[row][col].is_grayed and not self.GUI_grid_buttons[row][col].cget("state") == "disabled":
-                    all_grayed_or_occupied = False
-                    break
-            if not all_grayed_or_occupied:
-                break
+        # all_grayed_or_occupied = True
+        # for row in range(self.GUI_grid_size):
+        #     for col in range(self.GUI_grid_size):
+        #         if not self.GUI_grid_buttons[row][col].is_grayed and not self.GUI_grid_buttons[row][col].cget("state") == "disabled":
+        #             all_grayed_or_occupied = False
+        #             break
+        #     if not all_grayed_or_occupied:
+        #         break
 
         if self.GUI_game_logic.GLIcheck_draw(None):
             messagebox.showinfo("Fin de la partie", "Match nul!")
-            self.GUI_reset_game()  # Réinitialiser la grille uniquement
+            self.GUI_stop_game_and_go_home()  # Réinitialiser la grille uniquement
             return True
 
         return False
@@ -277,6 +280,15 @@ class TicTacToeGUI:
                 btn.is_grayed = False
                 row.append(btn)
             self.GUI_grid_buttons.append(row)
+
+    def GUI_stop_game_and_go_home(self):
+        # On réinitialise la grille et la logique
+        self.GUI_game_logic.GLIreset_difficulty()
+        self.GUI_reset_game()
+
+        # Puis on retourne à l’accueil
+        self.GUI_display_frame(self.GUI_frame_home)
+
 
     def GUI_make_move(self, row, col):
         """Gère un mouvement dans la grille"""
@@ -302,8 +314,9 @@ class TicTacToeGUI:
                     ai_player.PLRjouer(self.GUI_game_logic)
                     last_move = self.GUI_game_logic.move_history[-1]
                     row,col=last_move[0], last_move[1]
+                    print(f"{row} - {col}")
                     if self.GUI_grid_buttons[row][col].is_grayed:
-                        continue 
+                        break
 
                     self.GUI_update_button(last_move[0], last_move[1])
                     self.GUI_check_game_state()
@@ -312,42 +325,7 @@ class TicTacToeGUI:
                 if self.GUI_check_game_state():
                     return  
         print("Case cliquée :", row, col)
-        print("État de la grille :", self.GUI_game_logic.tGLIgrid)
                    
-    def GUI_check_game_state(self):
-        """Vérifie l'état du jeu et retourne True si la partie est terminée."""
-        human_winner = self.GUI_game_logic.GLIcheck_winner(self.GUI_game_logic.oGLIPlayer1.PLRget_color())
-        if human_winner:
-            messagebox.showinfo("Fin de la partie", f"{human_winner.PLRget_name()} a gagné!")
-            self.GUI_game_logic.GLIincrement_difficulty()  # Augmenter le niveau
-            self.GUI_level_label.config(text=f"Niveau : {self.GUI_game_logic.difficulty_level}")
-            self.GUI_reset_game()  # Réinitialiser la grille uniquement
-            return True
-
-        ai_winner = self.GUI_game_logic.GLIcheck_winner(self.GUI_game_logic.oGLIPlayer2.PLRget_color())
-        if ai_winner:
-            messagebox.showinfo("Fin de la partie", f"{ai_winner.PLRget_name()} a gagné!")
-            self.GUI_game_logic.GLIreset_difficulty()  # Réinitialiser le niveau de difficulté
-            self.GUI_level_label.config(text=f"Niveau : {self.GUI_game_logic.difficulty_level}")
-            self.GUI_reset_game()  # Réinitialiser la grille uniquement
-            return True
-        all_grayed_or_occupied = True
-        for row in range(self.GUI_grid_size):
-            for col in range(self.GUI_grid_size):
-                if not self.GUI_grid_buttons[row][col].is_grayed and not self.GUI_grid_buttons[row][col].cget("state") == "disabled":
-                    all_grayed_or_occupied = False
-                    break
-            if not all_grayed_or_occupied:
-                break
-
-        if self.GUI_game_logic.GLIcheck_draw(None):
-            messagebox.showinfo("Fin de la partie", "Match nul!")
-            self.GUI_reset_game()  # Réinitialiser la grille uniquement
-            return True
-
-        return False
-
-
 
     def GUI_update_button(self, row, col, reset=False):
          
@@ -399,7 +377,6 @@ class TicTacToeGUI:
         """Réinitialise la grille et le jeu."""
         self.GUI_game_logic.GLIreset_game()
         self.GUI_level_label.config(text=f"Niveau : {self.GUI_game_logic.difficulty_level}")
-        self.GUI_create_grid(self.GUI_grid_size)
 
     def GUI_set_grid_size(self, iNewSize):
         """Définit la taille de la grille."""
@@ -455,8 +432,11 @@ class TicTacToeGUI:
     def GUI_grayscale_button(self, row, col):
         """Grise un bouton spécifique de la grille et le désactive."""
         button = self.GUI_grid_buttons[row][col]
-        button.config(state="disabled", bg="grey")   
-        self.GUI_grid_buttons[row][col].is_grayed = True
+        button.config(state="disabled", bg="grey")  # Désactiver le bouton
+        button.is_grayed = True  # Indique que la case est grisée
+
+        self.GUI_game_logic.tGLIgrid[row][col] = TColor.GREY
+
     
     def GUI_undo_move(self):
         """Annule le dernier coup si possible."""
