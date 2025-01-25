@@ -378,6 +378,8 @@ class TicTacToeGUI:
         self.GUI_game_logic.GLIreset_game()
         self.GUI_level_label.config(text=f"Niveau : {self.GUI_game_logic.difficulty_level}")
 
+        self.GUI_create_grid(self.GUI_game_logic.iGLISize)
+
     def GUI_set_grid_size(self, iNewSize):
         """Définit la taille de la grille."""
         self.GUI_grid_size = iNewSize
