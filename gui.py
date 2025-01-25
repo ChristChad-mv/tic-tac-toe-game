@@ -266,7 +266,7 @@ class TicTacToeGUI:
                  fg="white").pack(pady=5)
 
         color_var = tk.StringVar(value="Bleu")
-        color_options = ["Vert", "Jaune", "Orange"]
+        color_options = ["Bleu", "Vert", "Jaune", "Orange"]
         color_dropdown = tk.OptionMenu(self.GUI_frame_settings, color_var, *color_options)
         color_dropdown.config(font=("Arial", 12), bg="#384b7a", fg="white", width=15)
         color_dropdown.pack(pady=5)
