@@ -1,61 +1,96 @@
+# =====================================================
+#               MODULE : PLAYER
+# =====================================================
+#  Ce module contient les classes représentant les
+#  différents types de joueurs (humain / IA) pour
+#  le jeu Tic-tac-toe.
+# =====================================================
+
+from enum import Enum
+from typing import List, Tuple, Optional
 from Player.color import TColor
+
+
+# =====================================================
+#               CLASSE TPlayer
+# =====================================================
 
 class TPlayer:
     """
-    Classe Mère représentant un joueur de Tic Tac Toe.
+    @class TPlayer
+    @brief Classe Mère représentant un joueur de Tic Tac Toe.
 
     Attributs :
-    - cPLRName (str) : Nom du joueur.
-    - oPLRColor (TColor) : Couleur du joueur
-    - bPLRIsAI (bool) : Indique si le joueur est une IA (True) ou un humain (False).
+      - cPLRName  (str)   : Nom du joueur
+      - oPLRColor (TColor): Couleur du joueur (ou None si non définie)
+      - bPLRIsAI  (bool)  : Indique si le joueur est une IA (True) ou un humain (False)
     """
 
-    def __init__(self, cPLRName: str, bIsAI=False):
+    def __init__(self, cPLRName: str, bIsAI: bool = False):
         """
-        Initialise un joueur avec un nom et définit s'il s'agit d'une IA ou d'un humain.
-
-        @param cName : Nom du joueur
-        @param bIsAI : Booléen indiquant si le joueur est une IA (par défaut False)
+        @brief Constructeur de TPlayer.
+        @param cPLRName [str] : Nom du joueur
+        @param bIsAI   [bool] : True si c’est un joueur IA, False sinon (par défaut)
         """
-        self.cPLRName = cPLRName
+        self.cPLRName: str = cPLRName
         self.oPLRColor = None
-        self.bPLRIsAI = bIsAI
+        self.bPLRIsAI: bool = bIsAI
 
-    def PLRset_color(self, oPlayerColor: TColor):
-        """
-        Définit la couleur du joueur.
-
-        @param oPlayerColor : Couleur du joueur (TColor)
-        """
-        self.oPLRColor = oPlayerColor
-
-    def PLRget_color(self) -> TColor:
-        """
-        Retourne la couleur du joueur.
-
-        @return : TColor (ROUGE, BLEU, ou VIDE)
-        """
-        return self.oPLRColor
+    # ---------------------------------------------------
+    #                GETTERS / SETTERS
+    # ---------------------------------------------------
 
     def PLRget_name(self) -> str:
         """
-        Retourne le nom du joueur.
-
-        @return : Nom du joueur (str)
+        @brief Retourne le nom du joueur.
+        @return [str] : Nom du joueur
         """
         return self.cPLRName
 
-    def PLRset_name(self, cPLRNewName: str):
+    def PLRset_name(self, cPLRNewName: str) -> None:
         """
-        Modifie le nom du joueur.
-
-        @param cNewName : Nouveau nom du joueur
+        @brief Modifie le nom du joueur.
+        @param cPLRNewName [str] : Nouveau nom du joueur
         """
         self.cPLRName = cPLRNewName
 
-    def PLRjouer(self, oGameLogic, iRow: int, iCol: int):
+    def PLRget_color(self):
         """
-        Le joueur demande à jouer via GameLogic.
+        @brief Retourne la couleur du joueur (TColor).
+        @return [TColor | None] : Couleur actuelle ou None
+        """
+        return self.oPLRColor
+
+    def PLRset_color(self, oPlayerColor):
+        """
+        @brief Définit la couleur du joueur.
+        @param oPlayerColor [TColor] : Nouvelle couleur
+        """
+        self.oPLRColor = oPlayerColor
+
+    def PLRis_ai(self) -> bool:
+        """
+        @brief Indique si le joueur est une IA.
+        @return [bool] : True si IA, False sinon
+        """
+        return self.bPLRIsAI
+
+    def PLRset_ai(self, bIsAI: bool) -> None:
+        """
+        @brief Modifie le statut IA ou humain du joueur.
+        @param bIsAI [bool] : True pour IA, False pour humain
+        """
+        self.bPLRIsAI = bIsAI
+
+    # ---------------------------------------------------
+    #           MÉTHODE DE JEU
+    # ---------------------------------------------------
+
+    def PLRjouer(self, oGameLogic, iRow: int, iCol: int) -> None:
+        """
+        @brief Méthode basique : le joueur demande à jouer via GameLogic.
+        @param oGameLogic [GameLogic] : Instance de la logique de jeu
+        @param iRow [int] : Ligne cible
+        @param iCol [int] : Colonne cible
         """
         oGameLogic.GLImake_move(self, iRow, iCol)
-        
