@@ -1,3 +1,11 @@
+# ==========================================================
+#               CLASSE : TCOLOR
+# ==========================================================
+#  Ce module a essentiellement but de founir des couleurs
+#  aux joueurs pour leurs choix avant un jeu.
+# ==========================================================
+
+
 from enum import Enum
 
 class TColor(Enum):
