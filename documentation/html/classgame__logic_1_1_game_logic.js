@@ -1,0 +1,26 @@
+var classgame__logic_1_1_game_logic =
+[
+    [ "__init__", "classgame__logic_1_1_game_logic.html#aa2795930f3d9a10245bc10f4d0254c68", null ],
+    [ "GLIcheck_column", "classgame__logic_1_1_game_logic.html#a0ae2cc19b59951d6724d9e0b9ecedae3", null ],
+    [ "GLIcheck_diagonal", "classgame__logic_1_1_game_logic.html#a99b219b235bcd5f62da8743bca436cc1", null ],
+    [ "GLIcheck_draw", "classgame__logic_1_1_game_logic.html#a4c6474638649b6604b18ec95f2e6d073", null ],
+    [ "GLIcheck_line", "classgame__logic_1_1_game_logic.html#a49fefdd1dda9bd3b344d1d66016c8dab", null ],
+    [ "GLIcheck_winner", "classgame__logic_1_1_game_logic.html#adf4cf86f974d3eaf5bcd1f82924927e1", null ],
+    [ "GLIget_current_player", "classgame__logic_1_1_game_logic.html#adefa9d69784c07b61f427dd5b87d463e", null ],
+    [ "GLIget_difficulty", "classgame__logic_1_1_game_logic.html#a7e7adfc6af0add386823c17bb22ea1e2", null ],
+    [ "GLIget_player_by_color", "classgame__logic_1_1_game_logic.html#a1f21af3087fdc1bec08bb38e2a94c392", null ],
+    [ "GLIget_size", "classgame__logic_1_1_game_logic.html#a149b741728e8d41f8157b72d8063550b", null ],
+    [ "GLIget_winning_condition", "classgame__logic_1_1_game_logic.html#a9f6ea282bc666648b60f4a15bf4e3237", null ],
+    [ "GLIincrement_difficulty", "classgame__logic_1_1_game_logic.html#a675d6ff730315f267a3b44d7b7cde043", null ],
+    [ "GLIinitialize_grid", "classgame__logic_1_1_game_logic.html#a1bb54a389fa28b6bebd9216fdc268a14", null ],
+    [ "GLImake_move", "classgame__logic_1_1_game_logic.html#afd1abdaf6dee4148b30a8b8b67735fad", null ],
+    [ "GLIpass_turn", "classgame__logic_1_1_game_logic.html#a5aa1df72dcad13997a02230ac93e070f", null ],
+    [ "GLIreset_difficulty", "classgame__logic_1_1_game_logic.html#aa0f7c2696bca00b6e53d09e20c61fd7a", null ],
+    [ "GLIreset_game", "classgame__logic_1_1_game_logic.html#a0837e8d1dc39f837a9c3e192d379ed71", null ],
+    [ "GLIresize_grid", "classgame__logic_1_1_game_logic.html#ac479c4c1804366dc89e043572b11fa74", null ],
+    [ "GLIset_difficulty", "classgame__logic_1_1_game_logic.html#a594e8ec5409e831759b4525190381065", null ],
+    [ "GLIset_grid_size", "classgame__logic_1_1_game_logic.html#a522b97bab0ae26c612f02cc064ae2345", null ],
+    [ "GLIset_players_name", "classgame__logic_1_1_game_logic.html#ac366c1564858c679717b8c34f936b7a3", null ],
+    [ "GLIset_winning_condition", "classgame__logic_1_1_game_logic.html#a5017a6f0b030615134a0b45e01652f4a", null ],
+    [ "GLIundo_move", "classgame__logic_1_1_game_logic.html#a47deb1d6322a83628468bec555dc80c5", null ]
+];
