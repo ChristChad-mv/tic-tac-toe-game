@@ -1,6 +1,6 @@
 # TIC-TAC-TOE
 
-## Summary
+## Sommaire
 
 - [Bref descriptif du projet](#bref-descriptif-du-projet)
 - [Réalisation](#réalisation)
