@@ -1,10 +1,16 @@
-# =====================================================
+# ==========================================================
 #               MODULE : PLAYER
-# =====================================================
-#  Ce module contient les classes représentant les
-#  différents types de joueurs (humain / IA) pour
-#  le jeu Tic-tac-toe.
-# =====================================================
+# ==========================================================
+#  Ce module contient la classe Mère Player qui 
+#  représente un joueur spécifique et qui sera utilisée
+#  pour servir de base pour les modules/classes PlayerAI
+#  et PlayerHumain. 
+#
+#  Implémente les setters/getters nous donnant la 
+#  possibilité d'avoir accès à des propriétés de la 
+#  classe et le méthode abstraite jouer qui sera
+#  implémenté différement selon les Player (AI ou Humain)
+# ==========================================================
 
 from enum import Enum
 from typing import List, Tuple, Optional
