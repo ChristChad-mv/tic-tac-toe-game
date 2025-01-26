@@ -1,5 +1,14 @@
 # TIC-TAC-TOE
 
+## Summary
+
+- [Bref descriptif du projet](#bref-descriptif-du-projet)
+- [Réalisation](#réalisation)
+- [Comment faire fonctionner le projet](#comment-faire-fonctionner-le-projet)
+- [Générer et consulter la documentation avec Doxygen](#générer-et-consulter-la-documentation-avec-doxygen)
+
+---
+
 ## Bienvenue dans la documentation du TIC-TAC-TOE
 
 Cette documentation est dédiée au projet **TIC-TAC-TOE** et sert de manuel de référence. Elle fournit des explications détaillées pour chaque classe et fonction utilisées dans le développement de ce jeu.
